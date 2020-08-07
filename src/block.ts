@@ -1,39 +1,26 @@
-class Block {
+export class Block {
   public readonly data: any
   public readonly timestamp: number
-  public readonly hash: string
+  public readonly difficulty: number
+  public readonly nonce: string
   public readonly prevHash: string
+  public readonly hash: string
 
-  /**
-   * 
-   * @param data 
-   * @param timestamp 
-   * @param hash 
-   * @param prevHash 
-   */
-  constructor(data: any, timestamp: number, hash: string, prevHash: string) {
+  constructor(data: any, timestamp: number, hash: string, prevHash: string, difficulty: number, nonce: string) {
     this.data = data
     this.timestamp = timestamp
-    this.hash = hash
+    this.difficulty = difficulty
+    this.nonce = nonce
     this.prevHash = prevHash
+    this.hash = hash
   }
 
-  /**
-   * 
-   * @param data 
-   * @param prevBlock 
-   */
-  static createBlock(data: any, prevBlock: Block) {
+  static createBlock(data: any, prevBlock: Block): Block {
     const hash = ''
-    return new Block(data, Date.now(), hash, prevBlock.hash)
+    return new Block(data, Date.now(), hash, prevBlock.hash, 0, '')
   }
 
-  /**
-   * 
-   */
-  static genesis() {
-
+  static createGenesis(): Block {
+    return new Block('', 0, '', '', 0, '')
   }
 }
-
-export default Block
