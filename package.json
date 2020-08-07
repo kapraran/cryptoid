@@ -1,0 +1,29 @@
+{
+  "name": "cryptoid",
+  "version": "0.1.0",
+  "author": {
+    "name": "Nikos Kapraras",
+    "email": "nikos@kapraran.dev",
+    "url": "https://kapraran.dev"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-typescript": "^7.10.4",
+    "@types/node": "^14.0.27",
+    "chai": "^4.2.0",
+    "mocha": "^8.1.1",
+    "typescript": "^3.9.7"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "npm run type-check -- --watch",
+    "build": "npm run build:types && npm run build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
+    "test": "mocha test/*.js"
+  }
+}
