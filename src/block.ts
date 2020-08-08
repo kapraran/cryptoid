@@ -6,7 +6,14 @@ export class Block {
   public readonly prevHash: string
   public readonly hash: string
 
-  constructor(data: any, timestamp: number, hash: string, prevHash: string, difficulty: number, nonce: string) {
+  constructor(
+    data: any,
+    timestamp: number,
+    hash: string,
+    prevHash: string,
+    difficulty: number,
+    nonce: string
+  ) {
     this.data = data
     this.timestamp = timestamp
     this.difficulty = difficulty

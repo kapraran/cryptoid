@@ -1,7 +1,6 @@
-import {Block} from '../lib/block'
-import {hashBlockData} from '../lib/utils'
+import { Block } from '../lib/block'
+import { hashBlockData } from '../lib/utils'
 import faker from 'faker'
-import { time } from 'console'
 
 faker.seed(1911)
 
@@ -25,11 +24,11 @@ describe('Block', () => {
   })
 
   describe('hashBlockData()', () => {
-    let data: any;
-    let timestamp: number;
-    let prevHash: string;
-    let difficulty: number;
-    let nonce: string;
+    let data: any
+    let timestamp: number
+    let prevHash: string
+    let difficulty: number
+    let nonce: string
 
     beforeEach(() => {
       data = [faker.name.firstName(), faker.name.lastName()]

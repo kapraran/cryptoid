@@ -18,6 +18,7 @@
     "@types/node": "^14.0.27",
     "faker": "^4.1.0",
     "jest": "^26.2.2",
+    "prettier": "^2.0.5",
     "ts-jest": "^26.1.4",
     "typescript": "^3.9.7"
   },
@@ -27,7 +28,8 @@
     "build": "npm run build:types && npm run build:js",
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
-    "test": "jest"
+    "test": "jest",
+    "prettier": "prettier --write src/ test/"
   },
   "dependencies": {}
 }
