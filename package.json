@@ -18,6 +18,7 @@
     "@types/node": "^14.0.27",
     "faker": "^4.1.0",
     "jest": "^26.2.2",
+    "pre-commit": "^1.2.2",
     "prettier": "^2.0.5",
     "ts-jest": "^26.1.4",
     "typescript": "^3.9.7"
@@ -31,5 +32,5 @@
     "test": "jest",
     "prettier": "prettier --write src/ test/"
   },
-  "dependencies": {}
+  "pre-commit": ["prettier"]
 }
