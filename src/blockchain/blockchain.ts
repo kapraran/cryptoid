@@ -7,6 +7,15 @@ export class Blockchain {
     this.chain = [Block.createGenesis()]
   }
 
+  addData(data: any) {
+    const difficulty = 0
+    const nonce = 'abc'
+    const prevHash = this.getLastBlock().hash
+
+    const block = Block.createBlock(data, difficulty, nonce, prevHash)
+    this.chain.push(block)
+  }
+
   isValid(): boolean {
     return false
   }

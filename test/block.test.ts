@@ -1,5 +1,5 @@
-import { Block } from '../lib/block'
-import { hashBlockData } from '../lib/utils'
+import { Block } from '../lib/blockchain/block'
+import { hashBlockData } from '../lib/blockchain/utils'
 import faker from 'faker'
 
 faker.seed(1911)
