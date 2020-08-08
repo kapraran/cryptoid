@@ -1,5 +1,7 @@
 import {Block} from '../lib/block'
+import {hashBlockData} from '../lib/utils'
 import faker from 'faker'
+import { time } from 'console'
 
 faker.seed(1911)
 
@@ -20,5 +22,33 @@ describe('Block', () => {
     expect(block.prevHash).toEqual(prevHash)
     expect(block.difficulty).toEqual(difficulty)
     expect(block.nonce).toEqual(nonce)
+  })
+
+  describe('hashBlockData()', () => {
+    let data: any;
+    let timestamp: number;
+    let prevHash: string;
+    let difficulty: number;
+    let nonce: string;
+
+    beforeEach(() => {
+      data = [faker.name.firstName(), faker.name.lastName()]
+      timestamp = Date.now()
+      prevHash = faker.random.alphaNumeric(64)
+      difficulty = 1
+      nonce = faker.random.alphaNumeric(64)
+    })
+
+    it('returns the same hashes for same input', () => {
+      const h1 = hashBlockData(data, timestamp, prevHash, difficulty, nonce)
+      const h2 = hashBlockData(data, timestamp, prevHash, difficulty, nonce)
+      expect(h1).toEqual(h2)
+    })
+
+    it('returns different hashes for different input', () => {
+      const h1 = hashBlockData(data, timestamp, prevHash, difficulty, nonce)
+      const h2 = hashBlockData(data, timestamp + 1, prevHash, difficulty, nonce)
+      expect(h1).not.toEqual(h2)
+    })
   })
 })

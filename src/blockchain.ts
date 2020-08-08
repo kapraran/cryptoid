@@ -7,6 +7,10 @@ export class Blockchain {
     this.chain = [Block.createGenesis()]
   }
 
+  isValid(): boolean {
+    return false
+  }
+
   getLastBlock(): Block {
     return this.chain[this.chain.length - 1];
   }
