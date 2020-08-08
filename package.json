@@ -6,6 +6,8 @@
     "email": "nikos@kapraran.dev",
     "url": "https://kapraran.dev"
   },
+  "repository": "https://github.com/nikosk93/cryptoid",
+  "license": "MIT",
   "devDependencies": {
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.11.1",
@@ -32,5 +34,7 @@
     "test": "jest",
     "prettier": "prettier --write src/ test/"
   },
-  "pre-commit": ["prettier"]
+  "pre-commit": [
+    "prettier"
+  ]
 }
