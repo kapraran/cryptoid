@@ -39,6 +39,8 @@
     "prettier"
   ],
   "dependencies": {
+    "@types/elliptic": "^6.4.12",
+    "elliptic": "^6.5.3",
     "express": "^4.17.1"
   }
 }
