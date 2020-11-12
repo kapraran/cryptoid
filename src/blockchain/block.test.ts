@@ -108,7 +108,7 @@ describe('Block', () => {
 
   describe('mineBlock()', () => {
     const lastBlock = Block.getGenesis()
-    const data = faker.name.firstName
+    const data = faker.name.firstName()
     const minedBlock = Block.mineBlock(lastBlock, data)
 
     it('returns a valid Block', () => {
@@ -125,7 +125,13 @@ describe('Block', () => {
     })
 
     it('creates the expected hash based on the given input', () => {
-      const hash = hashData(data, minedBlock.timestamp, minedBlock.difficulty, minedBlock.nonce, lastBlock.hash)
+      const hash = hashData(
+        data,
+        minedBlock.timestamp,
+        minedBlock.difficulty,
+        minedBlock.nonce,
+        lastBlock.hash
+      )
       expect(minedBlock.hash).toEqual(hash)
     })
   })

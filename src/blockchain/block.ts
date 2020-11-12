@@ -2,14 +2,12 @@ import { GENESIS_DATA } from '../config'
 import { hashData } from '../util/utils'
 
 class Block {
-  private static genesisBlock: Block | undefined
-
-  public readonly data: any
-  public readonly timestamp: number
-  public readonly difficulty: number
-  public readonly nonce: string
-  public readonly prevHash: string
-  public readonly hash: string
+  public data: any
+  public timestamp: number
+  public difficulty: number
+  public nonce: string
+  public prevHash: string
+  public hash: string
 
   constructor(
     data: any,
@@ -31,10 +29,12 @@ class Block {
    * Checks if the block is equal with `anotherBlock`
    * based on their hashes
    *
-   * @param anotherBlock
+   * @param otherBlock
    */
-  isEqual(anotherBlock: Block): boolean {
-    return this.hash == anotherBlock.hash
+  isEqual(otherBlock: Block): boolean {
+    return (
+      this.isValid() && otherBlock.isValid() && this.hash === otherBlock.hash
+    )
   }
 
   /**
@@ -56,9 +56,6 @@ class Block {
    * Returns the genesis block
    */
   static getGenesis(): Block {
-    if (Block.genesisBlock !== undefined)
-    return Block.genesisBlock
-
     // update hash
     GENESIS_DATA.hash = hashData(
       GENESIS_DATA.data,
@@ -69,7 +66,7 @@ class Block {
     )
 
     // create and store a valid block
-    Block.genesisBlock = new Block(
+    return new Block(
       GENESIS_DATA.data,
       GENESIS_DATA.timestamp,
       GENESIS_DATA.difficulty,
@@ -77,8 +74,6 @@ class Block {
       GENESIS_DATA.prevHash,
       GENESIS_DATA.hash
     )
-
-    return Block.genesisBlock
   }
 
   /**
@@ -102,7 +97,14 @@ class Block {
 
   static mineBlock(lastBlock: Block, data: any) {
     const now = Date.now()
-    return new Block(data, now, 0, 'abc', lastBlock.hash, hashData(data, now, 0, 'abc', lastBlock.hash))
+    return new Block(
+      data,
+      now,
+      0,
+      'abc',
+      lastBlock.hash,
+      hashData(data, now, 0, 'abc', lastBlock.hash)
+    )
   }
 }
 
