@@ -107,43 +107,74 @@ describe('Transaction', () => {
   })
 
   describe('update()', () => {
-    let originalSignature: EC.Signature
-    let originalRemaining: number
-    let newRecipient: string
-    let newAmount: number
-
-    beforeEach(() => {
-      originalSignature = transaction.input.signature
-      originalRemaining = transaction.outputMap[senderWallet.publicKey]
-      newRecipient = 'some-random-key-123'
-      newAmount = 5
-
-      transaction.update(senderWallet, newRecipient, newAmount)
+    describe('and the amount is invalid', () => {
+      it('throws an error', () => {
+        expect(() => {
+          transaction.update(senderWallet, 'some-new-recipient', 999999)
+        }).toThrow('Amount exceeds the balance')
+      })
     })
 
-    it('outputs the amount to the new recipient', () => {
-      expect(transaction.outputMap[newRecipient]).toEqual(newAmount)
-    })
+    describe('and the amount is valid', () => {
+      let originalSignature: EC.Signature
+      let originalRemaining: number
+      let newRecipient: string
+      let newAmount: number
 
-    it('outputs the updated remaining balance for the sender', () => {
-      expect(transaction.outputMap[senderWallet.publicKey]).toEqual(
-        originalRemaining - newAmount
-      )
-    })
+      beforeEach(() => {
+        originalSignature = transaction.input.signature
+        originalRemaining = transaction.outputMap[senderWallet.publicKey]
+        newRecipient = 'some-random-key-123'
+        newAmount = 5
 
-    it('maintains the total output to be equal to the input amount', () => {
-      const outputSum = Object.values(transaction.outputMap).reduce<number>(
-        (sum, amount) => sum + amount,
-        0
-      )
-      expect(outputSum).toEqual(transaction.input.amount)
-    })
+        transaction.update(senderWallet, newRecipient, newAmount)
+      })
 
-    it('has an updated valid signature', () => {
-      expect(transaction.input.signature).not.toEqual(originalSignature)
-      expect(transaction.input.signature).toEqual(
-        senderWallet.sign(transaction.outputMap)
-      )
+      it('outputs the amount to the new recipient', () => {
+        expect(transaction.outputMap[newRecipient]).toEqual(newAmount)
+      })
+
+      it('outputs the updated remaining balance for the sender', () => {
+        expect(transaction.outputMap[senderWallet.publicKey]).toEqual(
+          originalRemaining - newAmount
+        )
+      })
+
+      it('maintains the total output to be equal to the input amount', () => {
+        const outputSum = Object.values(transaction.outputMap).reduce<number>(
+          (sum, amount) => sum + amount,
+          0
+        )
+        expect(outputSum).toEqual(transaction.input.amount)
+      })
+
+      it('has an updated valid signature', () => {
+        expect(transaction.input.signature).not.toEqual(originalSignature)
+        expect(transaction.input.signature).toEqual(
+          senderWallet.sign(transaction.outputMap)
+        )
+      })
+
+      describe('and another update for the an existing recipient', () => {
+        let addedAmount: number
+
+        beforeEach(() => {
+          addedAmount = 5.0
+          transaction.update(senderWallet, newRecipient, addedAmount)
+        })
+
+        it('adds the amount to the existing recipient', () => {
+          expect(transaction.outputMap[newRecipient]).toEqual(
+            newAmount + addedAmount
+          )
+        })
+
+        it('subtracts the amount from the output for the sender', () => {
+          expect(transaction.outputMap[senderWallet.publicKey]).toEqual(
+            originalRemaining - addedAmount - newAmount
+          )
+        })
+      })
     })
   })
 })

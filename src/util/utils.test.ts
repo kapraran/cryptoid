@@ -1,10 +1,10 @@
-import { hash } from "./utils"
+import { hash } from './utils'
 
 describe('utils', () => {
   describe('hash()', () => {
     it('returns the same hash for the same input', () => {
-      const inputA = {a: 1}
-      const inputB = {a: 1}
+      const inputA = { a: 1 }
+      const inputB = { a: 1 }
 
       expect(hash(inputA)).toEqual(hash(inputB))
     })
@@ -14,7 +14,7 @@ describe('utils', () => {
     })
 
     it('creates a different hash even when the object reference is the same but has updated props', () => {
-      const obj: {name?: string} = {}
+      const obj: { name?: string } = {}
       const hashA = hash(obj)
       obj.name = 'Nick'
       const hashB = hash(obj)
