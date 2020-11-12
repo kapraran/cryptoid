@@ -1,11 +1,11 @@
 import { GENESIS_DATA } from '../config'
-import { hashData } from '../util/utils'
+import { hashData, satisfiesDifficulty } from '../util/utils'
 
 class Block {
   public data: any
   public timestamp: number
   public difficulty: number
-  public nonce: string
+  public nonce: number
   public prevHash: string
   public hash: string
 
@@ -13,7 +13,7 @@ class Block {
     data: any,
     timestamp: number,
     difficulty: number,
-    nonce: string,
+    nonce: number,
     prevHash: string,
     hash: string
   ) {
@@ -87,7 +87,7 @@ class Block {
   static createBlock(
     data: any,
     difficulty: number,
-    nonce: string,
+    nonce: number,
     prevHash: string
   ): Block {
     const timestamp = Date.now()
@@ -96,14 +96,28 @@ class Block {
   }
 
   static mineBlock(lastBlock: Block, data: any) {
-    const now = Date.now()
+    let timestamp = Date.now()
+    const prevHash = lastBlock.hash
+    const difficulty = lastBlock.difficulty
+
+    let hash
+    let nonce = 0
+    while(true) {
+      timestamp = Date.now()
+      nonce++
+      hash = hashData(data, timestamp, prevHash, difficulty, nonce)
+
+      if (satisfiesDifficulty(hash, difficulty))
+        break
+    }
+
     return new Block(
       data,
-      now,
-      0,
-      'abc',
-      lastBlock.hash,
-      hashData(data, now, 0, 'abc', lastBlock.hash)
+      timestamp,
+      difficulty,
+      nonce,
+      prevHash,
+      hash
     )
   }
 }

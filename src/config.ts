@@ -5,8 +5,8 @@ export const STARTING_BALANCE = 1000.0
 export const GENESIS_DATA = {
   data: 'genesis-block-data',
   timestamp: new Date('Sat Aug 01 2020 00:00:00 GMT+0300').getTime(),
-  difficulty: 0,
-  nonce: 'no-nonce',
+  difficulty: INITIAL_DIFFICULTY,
+  nonce: 0,
   prevHash: 'no-prev-hash',
   hash: '',
 }

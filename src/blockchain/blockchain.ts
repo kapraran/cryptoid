@@ -32,25 +32,41 @@ class Blockchain {
   }
 
   /**
+   * 
+   * @param newChain 
+   */
+  replaceChain(newChain: Block[]) {
+    if (newChain.length <= this.chain.length)
+      return false
+
+    if (Blockchain.isValid(newChain)) {
+      this.chain = newChain
+      return true
+    }
+
+    return false
+  }
+
+  /**
    * Checks if a blockchain is valid
    */
-  static isValid(blockchain: Blockchain) {
+  static isValid(chain: Block[]) {
     // it should start with the genesis block
     if (
-      blockchain.chain.length < 1 ||
-      !blockchain.chain[0].isEqual(Block.getGenesis())
+      chain.length < 1 ||
+      !chain[0].isEqual(Block.getGenesis())
     ) {
       return false
     }
 
-    for (let i = 0; i < blockchain.chain.length; i++) {
-      const block = blockchain.chain[i]
+    for (let i = 0; i < chain.length; i++) {
+      const block = chain[i]
 
       // each of the block should be valid
       if (!block.isValid()) return false
 
       // each prevHash should match the hash of the previous block
-      if (i > 0 && block.prevHash !== blockchain.chain[i - 1].hash) return false
+      if (i > 0 && block.prevHash !== chain[i - 1].hash) return false
     }
 
     return true

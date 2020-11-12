@@ -10,13 +10,13 @@ describe('Block', () => {
   let data: any
   let prevHash: string
   let difficulty: number
-  let nonce: string
+  let nonce: number
 
   beforeAll(() => {
     data = faker.name.firstName()
     prevHash = faker.random.alphaNumeric(64)
-    difficulty = 0
-    nonce = faker.random.alphaNumeric(64)
+    difficulty = 1
+    nonce = faker.random.number()
     exampleBlock = Block.createBlock(data, difficulty, nonce, prevHash)
   })
 
@@ -36,7 +36,7 @@ describe('Block', () => {
 
     it('block is invalid when any of its fields is changed', () => {
       const block1 = new Block(
-        'fake-data',
+        faker.name.title(),
         exampleBlock.timestamp,
         exampleBlock.difficulty,
         exampleBlock.nonce,
@@ -45,7 +45,7 @@ describe('Block', () => {
       )
       const block2 = new Block(
         exampleBlock.data,
-        1,
+        faker.random.number(),
         exampleBlock.difficulty,
         exampleBlock.nonce,
         exampleBlock.prevHash,
@@ -54,7 +54,7 @@ describe('Block', () => {
       const block3 = new Block(
         exampleBlock.data,
         exampleBlock.timestamp,
-        12,
+        faker.random.number(),
         exampleBlock.nonce,
         exampleBlock.prevHash,
         exampleBlock.hash
@@ -63,7 +63,7 @@ describe('Block', () => {
         exampleBlock.data,
         exampleBlock.timestamp,
         exampleBlock.difficulty,
-        'fake-nonce',
+        faker.random.number(),
         exampleBlock.prevHash,
         exampleBlock.hash
       )
@@ -72,7 +72,7 @@ describe('Block', () => {
         exampleBlock.timestamp,
         exampleBlock.difficulty,
         exampleBlock.nonce,
-        'fake-prevHash',
+        faker.random.alphaNumeric(64),
         exampleBlock.hash
       )
 
@@ -133,6 +133,10 @@ describe('Block', () => {
         lastBlock.hash
       )
       expect(minedBlock.hash).toEqual(hash)
+    })
+
+    it('matches the difficulty', () => {
+      expect(minedBlock.hash.substring(0, minedBlock.difficulty)).toEqual('0'.repeat(minedBlock.difficulty))
     })
   })
 })

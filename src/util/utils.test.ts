@@ -22,4 +22,8 @@ describe('utils', () => {
       expect(hashA).not.toEqual(hashB)
     })
   })
+
+  describe('satisfiesDifficulty()', () => {
+    it('TODO', () => expect(true).toBe(true))
+  })
 })

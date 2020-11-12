@@ -27,3 +27,7 @@ export const verifySignature = ({
   const tempKey = ec.keyFromPublic(publicKey, 'hex')
   return tempKey.verify(hashData(data), signature)
 }
+
+export const satisfiesDifficulty = (hash: string, difficulty: number) => {
+  return hash.substring(0, difficulty) === '0'.repeat(difficulty)
+}
