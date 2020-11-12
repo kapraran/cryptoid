@@ -1,6 +1,7 @@
 import Block from './block'
 import faker from 'faker'
 import { FAKER_SEED } from '../config'
+import { hashData } from '../util/utils'
 
 faker.seed(FAKER_SEED)
 
@@ -83,12 +84,49 @@ describe('Block', () => {
     })
   })
 
+  describe('getGenesis()', () => {
+    it('returns a valid block', () => {
+      expect(Block.getGenesis() instanceof Block).toBe(true)
+    })
+
+    it('always returns the same block', () => {
+      const blockA = Block.getGenesis()
+      const blockB = Block.getGenesis()
+
+      expect(blockA.isEqual(blockB)).toBe(true)
+    })
+  })
+
   describe('Block.hash', () => {
     it('is not the same for different input', () => {
       const blockA = Block.createBlock(data, difficulty, nonce, prevHash)
       const blockB = Block.createBlock(data, difficulty + 1, nonce, prevHash)
 
       expect(blockA.hash).not.toEqual(blockB.hash)
+    })
+  })
+
+  describe('mineBlock()', () => {
+    const lastBlock = Block.getGenesis()
+    const data = faker.name.firstName
+    const minedBlock = Block.mineBlock(lastBlock, data)
+
+    it('returns a valid Block', () => {
+      expect(minedBlock instanceof Block).toBe(true)
+      expect(minedBlock.isValid()).toBe(true)
+    })
+
+    it('set the `prevHash` to genesis hash', () => {
+      expect(minedBlock.prevHash).toEqual(lastBlock.hash)
+    })
+
+    it('sets the `data`', () => {
+      expect(minedBlock.data).toEqual(data)
+    })
+
+    it('creates the expected hash based on the given input', () => {
+      const hash = hashData(data, minedBlock.timestamp, minedBlock.difficulty, minedBlock.nonce, lastBlock.hash)
+      expect(minedBlock.hash).toEqual(hash)
     })
   })
 })

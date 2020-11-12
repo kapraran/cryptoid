@@ -4,7 +4,7 @@ class Blockchain {
   private chain: Block[]
 
   constructor() {
-    this.chain = [Block.createGenesis()]
+    this.chain = [Block.getGenesis()]
   }
 
   addData(data: any) {

@@ -2,6 +2,8 @@ import { GENESIS_DATA } from '../config'
 import { hashData } from '../util/utils'
 
 class Block {
+  private static genesisBlock: Block | undefined
+
   public readonly data: any
   public readonly timestamp: number
   public readonly difficulty: number
@@ -51,6 +53,35 @@ class Block {
   }
 
   /**
+   * Returns the genesis block
+   */
+  static getGenesis(): Block {
+    if (Block.genesisBlock !== undefined)
+    return Block.genesisBlock
+
+    // update hash
+    GENESIS_DATA.hash = hashData(
+      GENESIS_DATA.data,
+      GENESIS_DATA.timestamp,
+      GENESIS_DATA.prevHash,
+      GENESIS_DATA.difficulty,
+      GENESIS_DATA.nonce
+    )
+
+    // create and store a valid block
+    Block.genesisBlock = new Block(
+      GENESIS_DATA.data,
+      GENESIS_DATA.timestamp,
+      GENESIS_DATA.difficulty,
+      GENESIS_DATA.nonce,
+      GENESIS_DATA.prevHash,
+      GENESIS_DATA.hash
+    )
+
+    return Block.genesisBlock
+  }
+
+  /**
    * Creates and returns a valid block based on the input data
    *
    * @param data
@@ -69,28 +100,9 @@ class Block {
     return new Block(data, timestamp, difficulty, nonce, prevHash, hash)
   }
 
-  /**
-   * Returns the genesis block
-   */
-  static createGenesis(): Block {
-    // update hash
-    GENESIS_DATA.hash = hashData(
-      GENESIS_DATA.data,
-      GENESIS_DATA.timestamp,
-      GENESIS_DATA.prevHash,
-      GENESIS_DATA.difficulty,
-      GENESIS_DATA.nonce
-    )
-
-    // create a valid block
-    return new Block(
-      GENESIS_DATA.data,
-      GENESIS_DATA.timestamp,
-      GENESIS_DATA.difficulty,
-      GENESIS_DATA.nonce,
-      GENESIS_DATA.prevHash,
-      GENESIS_DATA.hash
-    )
+  static mineBlock(lastBlock: Block, data: any) {
+    const now = Date.now()
+    return new Block(data, now, 0, 'abc', lastBlock.hash, hashData(data, now, 0, 'abc', lastBlock.hash))
   }
 }
 
