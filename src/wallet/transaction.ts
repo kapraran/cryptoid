@@ -41,6 +41,17 @@ class Transaction {
     }
   }
 
+  update(senderWallet: Wallet, newRecipient: string, newAmount: number) {
+    // update the output map with the new recipient
+    this.outputMap[newRecipient] = newAmount
+    this.outputMap[senderWallet.publicKey] =
+      this.outputMap[senderWallet.publicKey] - newAmount
+
+    // update input field
+    this.input.timestamp = Date.now()
+    this.input.signature = senderWallet.sign(this.outputMap)
+  }
+
   static isValidTransaction(transaction: Transaction) {
     const outputSum = Object.values(transaction.outputMap).reduce<number>(
       (sum, amount) => {

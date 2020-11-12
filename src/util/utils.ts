@@ -7,9 +7,9 @@ interface VerifySignatureParams {
   signature: any
 }
 
-export const hash = (data: any) => {
+export const hash = (...inputs: any[]) => {
   // stringify data
-  const str = JSON.stringify(data) + ''
+  const str = inputs.map(item => JSON.stringify(item) + '').sort().join('|')
 
   // convert to a sha265 hash
   const sha256 = crypto.createHash('sha256')

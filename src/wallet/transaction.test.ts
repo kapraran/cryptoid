@@ -1,3 +1,4 @@
+import { ec as EC } from 'elliptic'
 import { ec } from '../util/ec'
 import { verifySignature } from '../util/utils'
 import Transaction from './transaction'
@@ -102,6 +103,47 @@ describe('Transaction', () => {
           expect(errorMock).toHaveBeenCalled()
         })
       })
+    })
+  })
+
+  describe('update()', () => {
+    let originalSignature: EC.Signature
+    let originalRemaining: number
+    let newRecipient: string
+    let newAmount: number
+
+    beforeEach(() => {
+      originalSignature = transaction.input.signature
+      originalRemaining = transaction.outputMap[senderWallet.publicKey]
+      newRecipient = 'some-random-key-123'
+      newAmount = 5
+
+      transaction.update(senderWallet, newRecipient, newAmount)
+    })
+
+    it('outputs the amount to the new recipient', () => {
+      expect(transaction.outputMap[newRecipient]).toEqual(newAmount)
+    })
+
+    it('outputs the updated remaining balance for the sender', () => {
+      expect(transaction.outputMap[senderWallet.publicKey]).toEqual(
+        originalRemaining - newAmount
+      )
+    })
+
+    it('maintains the total output to be equal to the input amount', () => {
+      const outputSum = Object.values(transaction.outputMap).reduce<number>(
+        (sum, amount) => sum + amount,
+        0
+      )
+      expect(outputSum).toEqual(transaction.input.amount)
+    })
+
+    it('has an updated valid signature', () => {
+      expect(transaction.input.signature).not.toEqual(originalSignature)
+      expect(transaction.input.signature).toEqual(
+        senderWallet.sign(transaction.outputMap)
+      )
     })
   })
 })
