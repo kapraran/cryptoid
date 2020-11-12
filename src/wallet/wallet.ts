@@ -19,6 +19,8 @@ class Wallet {
   sign(data: any) {
     return this.keyPair.sign(hash(data))
   }
+
+  static createTransaction() {}
 }
 
 export default Wallet

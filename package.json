@@ -6,7 +6,7 @@
     "email": "nikos@kapraran.dev",
     "url": "https://kapraran.dev"
   },
-  "repository": "https://github.com/nikosk93/cryptoid",
+  "repository": "https://github.com/kapraran/cryptoid",
   "license": "MIT",
   "devDependencies": {
     "@babel/cli": "^7.10.5",
@@ -15,6 +15,7 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-typescript": "^7.10.4",
+    "@types/elliptic": "^6.4.12",
     "@types/express": "^4.17.7",
     "@types/faker": "^4.1.12",
     "@types/jest": "^26.0.9",
@@ -40,7 +41,6 @@
     "prettier"
   ],
   "dependencies": {
-    "@types/elliptic": "^6.4.12",
     "elliptic": "^6.5.3",
     "express": "^4.17.1",
     "uuid": "^8.3.1"

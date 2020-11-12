@@ -1,4 +1,5 @@
 import { ec } from '../util/ec'
+import { verifySignature } from '../util/utils'
 import Transaction from './transaction'
 import Wallet from './wallet'
 
@@ -34,6 +35,73 @@ describe('Transaction', () => {
       expect(transaction.outputMap[senderWallet.publicKey]).toEqual(
         senderWallet.balance - amount
       )
+    })
+  })
+
+  describe('input', () => {
+    it('has an input', () => {
+      expect(transaction).toHaveProperty('input')
+    })
+
+    it('has an input.timestamp', () => {
+      expect(transaction.input).toHaveProperty('timestamp')
+    })
+
+    it('sets the amount to the senderWallet.balance', () => {
+      expect(transaction.input.amount).toEqual(senderWallet.balance)
+    })
+
+    it('sets the addres to the senderWallet.publicKey', () => {
+      expect(transaction.input.address).toEqual(senderWallet.publicKey)
+    })
+
+    it('should have signed the input', () => {
+      expect(
+        verifySignature({
+          publicKey: senderWallet.publicKey,
+          data: transaction.outputMap,
+          signature: transaction.input.signature,
+        })
+      ).toBe(true)
+    })
+  })
+
+  describe('isValidTransaction()', () => {
+    let errorMock: jest.Mock
+
+    beforeEach(() => {
+      errorMock = jest.fn()
+      global.console.error = errorMock
+    })
+
+    describe('when transaction is valid', () => {
+      it('returns true', () => {
+        expect(Transaction.isValidTransaction(transaction)).toBe(true)
+      })
+    })
+
+    describe('when transaction is invalid', () => {
+      describe('and the outputMap is invalid', () => {
+        it('returns false', () => {
+          transaction.outputMap[senderWallet.publicKey] = 12345
+          expect(Transaction.isValidTransaction(transaction)).toBe(false)
+          expect(errorMock).toHaveBeenCalled()
+        })
+      })
+
+      describe('and the input is invalid', () => {
+        it('returns false with signature from same wallet', () => {
+          transaction.input.signature = senderWallet.sign('invalid-data')
+          expect(Transaction.isValidTransaction(transaction)).toBe(false)
+          expect(errorMock).toHaveBeenCalled()
+        })
+
+        it('returns false with signature from another wallet', () => {
+          transaction.input.signature = new Wallet().sign(transaction.outputMap)
+          expect(Transaction.isValidTransaction(transaction)).toBe(false)
+          expect(errorMock).toHaveBeenCalled()
+        })
+      })
     })
   })
 })
