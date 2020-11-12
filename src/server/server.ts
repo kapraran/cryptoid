@@ -1,7 +1,6 @@
 import { app } from './app'
+import { PORT } from './config'
 
-const port = 4000
-
-export const server = app.listen(port, '0.0.0.0', () => {
-  console.log(`Server started at ${port}`)
-})
+export const server = app.listen(PORT, '0.0.0.0', () =>
+  console.log(`Server started at ${PORT}`)
+)
