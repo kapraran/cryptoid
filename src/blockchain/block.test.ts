@@ -1,6 +1,6 @@
 import Block from './block'
 import faker from 'faker'
-import { FAKER_SEED } from '../config'
+import { FAKER_SEED, MINE_RATE } from '../config'
 import { hashData } from '../util/utils'
 
 faker.seed(FAKER_SEED)
@@ -136,7 +136,33 @@ describe('Block', () => {
     })
 
     it('matches the difficulty', () => {
-      expect(minedBlock.hash.substring(0, minedBlock.difficulty)).toEqual('0'.repeat(minedBlock.difficulty))
+      expect(minedBlock.hash.substring(0, minedBlock.difficulty)).toEqual(
+        '0'.repeat(minedBlock.difficulty)
+      )
+    })
+  })
+
+  describe('nextDifficulty()', () => {
+    it('raises the difficulty if mined quickly', () => {
+      const newTimestamp = exampleBlock.timestamp + MINE_RATE / 2
+
+      expect(
+        Block.nextDifficulty(
+          exampleBlock,
+          newTimestamp
+        )
+      ).toEqual(exampleBlock.difficulty + 1)
+    })
+
+    it('lowers the difficulty if mined slowly', () => {
+      const newTimestamp = exampleBlock.timestamp + MINE_RATE + 100
+
+      expect(
+        Block.nextDifficulty(
+          exampleBlock,
+          newTimestamp
+        )
+      ).toEqual(exampleBlock.difficulty - 1)
     })
   })
 })

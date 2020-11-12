@@ -90,7 +90,14 @@ describe('Blockchain', () => {
 
     describe('when the chain is not longer', () => {
       it('does not replace the chain', () => {
-        const wasReplaced = blockchain.replaceChain([Block.createBlock(faker.name.firstName(), 0, faker.random.number(), faker.random.alphaNumeric(16))])
+        const wasReplaced = blockchain.replaceChain([
+          Block.createBlock(
+            faker.name.firstName(),
+            0,
+            faker.random.number(),
+            faker.random.alphaNumeric(16)
+          ),
+        ])
 
         expect(wasReplaced).toBe(false)
         expect(blockchain.chain).toEqual(originalChain)

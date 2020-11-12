@@ -1,4 +1,4 @@
-import { GENESIS_DATA } from '../config'
+import { GENESIS_DATA, MINE_RATE } from '../config'
 import { hashData, satisfiesDifficulty } from '../util/utils'
 
 class Block {
@@ -77,6 +77,19 @@ class Block {
   }
 
   /**
+   *
+   * @param prevBlock
+   * @param newTimestamp
+   */
+  static nextDifficulty(prevBlock: Block, newTimestamp: number) {
+    let { difficulty, timestamp } = prevBlock
+    if (newTimestamp - timestamp > MINE_RATE) difficulty -= 1
+    if (newTimestamp - timestamp < MINE_RATE) difficulty += 1
+
+    return Math.max(0, difficulty)
+  }
+
+  /**
    * Creates and returns a valid block based on the input data
    *
    * @param data
@@ -95,30 +108,28 @@ class Block {
     return new Block(data, timestamp, difficulty, nonce, prevHash, hash)
   }
 
-  static mineBlock(lastBlock: Block, data: any) {
+  /**
+   *
+   * @param prevBlock
+   * @param data
+   */
+  static mineBlock(prevBlock: Block, data: any) {
+    const prevHash = prevBlock.hash
     let timestamp = Date.now()
-    const prevHash = lastBlock.hash
-    const difficulty = lastBlock.difficulty
+    let difficulty = prevBlock.difficulty
 
     let hash
     let nonce = 0
-    while(true) {
+    while (true) {
       timestamp = Date.now()
+      difficulty = Block.nextDifficulty(prevBlock, timestamp)
       nonce++
       hash = hashData(data, timestamp, prevHash, difficulty, nonce)
 
-      if (satisfiesDifficulty(hash, difficulty))
-        break
+      if (satisfiesDifficulty(hash, difficulty)) break
     }
 
-    return new Block(
-      data,
-      timestamp,
-      difficulty,
-      nonce,
-      prevHash,
-      hash
-    )
+    return new Block(data, timestamp, difficulty, nonce, prevHash, hash)
   }
 }
 

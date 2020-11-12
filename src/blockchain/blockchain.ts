@@ -1,3 +1,4 @@
+import { MINE_RATE } from '../config'
 import Block from './block'
 
 class Blockchain {
@@ -15,7 +16,7 @@ class Blockchain {
    */
   addData(data: any) {
     const difficulty = 0
-    const nonce = 'abc'
+    const nonce = 123
     const prevHash = this.getLastBlock().hash
 
     const block = Block.createBlock(data, difficulty, nonce, prevHash)
@@ -32,12 +33,11 @@ class Blockchain {
   }
 
   /**
-   * 
-   * @param newChain 
+   *
+   * @param newChain
    */
   replaceChain(newChain: Block[]) {
-    if (newChain.length <= this.chain.length)
-      return false
+    if (newChain.length <= this.chain.length) return false
 
     if (Blockchain.isValid(newChain)) {
       this.chain = newChain
@@ -52,10 +52,7 @@ class Blockchain {
    */
   static isValid(chain: Block[]) {
     // it should start with the genesis block
-    if (
-      chain.length < 1 ||
-      !chain[0].isEqual(Block.getGenesis())
-    ) {
+    if (chain.length < 1 || !chain[0].isEqual(Block.getGenesis())) {
       return false
     }
 
