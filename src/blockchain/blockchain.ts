@@ -1,6 +1,6 @@
-import { Block } from './block'
+import Block from './block'
 
-export class Blockchain {
+class Blockchain {
   private chain: Block[]
 
   constructor() {
@@ -24,3 +24,5 @@ export class Blockchain {
     return this.chain[this.chain.length - 1]
   }
 }
+
+export default Blockchain

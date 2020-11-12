@@ -7,7 +7,7 @@ interface VerifySignatureParams {
   signature: any
 }
 
-export const hash = (...inputs: any[]) => {
+export const hashData = (...inputs: any[]) => {
   // stringify data
   const str = inputs
     .map((item) => JSON.stringify(item) + '')
@@ -25,5 +25,5 @@ export const verifySignature = ({
   signature,
 }: VerifySignatureParams) => {
   const tempKey = ec.keyFromPublic(publicKey, 'hex')
-  return tempKey.verify(hash(data), signature)
+  return tempKey.verify(hashData(data), signature)
 }

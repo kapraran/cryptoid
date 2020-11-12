@@ -1,8 +1,8 @@
-import { Block } from '../lib/blockchain/block'
-import { hashBlockData } from '../lib/blockchain/utils'
+import Block from './block'
 import faker from 'faker'
+import { FAKER_SEED } from '../config'
 
-faker.seed(1911)
+faker.seed(FAKER_SEED)
 
 describe('Block', () => {
   let exampleBlock: Block
@@ -83,41 +83,12 @@ describe('Block', () => {
     })
   })
 
-  describe('hashBlockData()', () => {
-    it('returns the same hashes for same input', () => {
-      const h1 = hashBlockData(
-        data,
-        exampleBlock.timestamp,
-        prevHash,
-        difficulty,
-        nonce
-      )
-      const h2 = hashBlockData(
-        data,
-        exampleBlock.timestamp,
-        prevHash,
-        difficulty,
-        nonce
-      )
-      expect(h1).toEqual(h2)
-    })
+  describe('Block.hash', () => {
+    it('is not the same for different input', () => {
+      const blockA = Block.createBlock(data, difficulty, nonce, prevHash)
+      const blockB = Block.createBlock(data, difficulty + 1, nonce, prevHash)
 
-    it('returns different hashes for different input', () => {
-      const h1 = hashBlockData(
-        data,
-        exampleBlock.timestamp,
-        prevHash,
-        difficulty,
-        nonce
-      )
-      const h2 = hashBlockData(
-        data,
-        exampleBlock.timestamp + 1,
-        prevHash,
-        difficulty,
-        nonce
-      )
-      expect(h1).not.toEqual(h2)
+      expect(blockA.hash).not.toEqual(blockB.hash)
     })
   })
 })

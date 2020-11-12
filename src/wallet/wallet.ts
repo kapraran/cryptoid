@@ -1,7 +1,7 @@
 import { ec as EC } from 'elliptic'
 import { STARTING_BALANCE } from '../config'
 import { ec } from '../util/ec'
-import { hash } from '../util/utils'
+import { hashData } from '../util/utils'
 import Transaction from './transaction'
 
 class Wallet {
@@ -18,7 +18,7 @@ class Wallet {
   }
 
   sign(data: any) {
-    return this.keyPair.sign(hash(data))
+    return this.keyPair.sign(hashData(data))
   }
 
   createTransaction(amount: number, recipientAddress: string) {

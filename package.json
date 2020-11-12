@@ -35,7 +35,7 @@
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
     "test": "jest",
-    "prettier": "prettier --write src/ test/"
+    "prettier": "prettier --write src/"
   },
   "pre-commit": [
     "prettier"

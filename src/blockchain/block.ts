@@ -1,23 +1,7 @@
-import { hashBlockData } from './utils'
+import { GENESIS_DATA } from '../config'
+import { hashData } from '../util/utils'
 
-export const genesisBlockData = {
-  data: 'genesis-hello-data',
-  timestamp: new Date('Sat Aug 08 2020 00:00:00 GMT+0300').getTime(),
-  difficulty: 0,
-  nonce: 'no-nonce',
-  prevHash: 'no-prev-hash-',
-  hash: '',
-}
-
-genesisBlockData.hash = hashBlockData(
-  genesisBlockData.data,
-  genesisBlockData.timestamp,
-  genesisBlockData.prevHash,
-  genesisBlockData.difficulty,
-  genesisBlockData.nonce
-)
-
-export class Block {
+class Block {
   public readonly data: any
   public readonly timestamp: number
   public readonly difficulty: number
@@ -41,23 +25,39 @@ export class Block {
     this.hash = hash
   }
 
+  /**
+   * Checks if the block is equal with `anotherBlock`
+   * based on their hashes
+   *
+   * @param anotherBlock
+   */
   isEqual(anotherBlock: Block): boolean {
     return this.hash == anotherBlock.hash
   }
 
+  /**
+   * Checks if the block is valid
+   */
   isValid(): boolean {
-    const validHash = hashBlockData(
+    const validHash = hashData(
       this.data,
       this.timestamp,
       this.prevHash,
       this.difficulty,
       this.nonce
     )
-    if (this.hash != validHash) return false
 
-    return true
+    return this.hash === validHash
   }
 
+  /**
+   * Creates and returns a valid block based on the input data
+   *
+   * @param data
+   * @param difficulty
+   * @param nonce
+   * @param prevHash
+   */
   static createBlock(
     data: any,
     difficulty: number,
@@ -65,18 +65,33 @@ export class Block {
     prevHash: string
   ): Block {
     const timestamp = Date.now()
-    const hash = hashBlockData(data, timestamp, prevHash, difficulty, nonce)
+    const hash = hashData(data, timestamp, prevHash, difficulty, nonce)
     return new Block(data, timestamp, difficulty, nonce, prevHash, hash)
   }
 
+  /**
+   * Returns the genesis block
+   */
   static createGenesis(): Block {
+    // update hash
+    GENESIS_DATA.hash = hashData(
+      GENESIS_DATA.data,
+      GENESIS_DATA.timestamp,
+      GENESIS_DATA.prevHash,
+      GENESIS_DATA.difficulty,
+      GENESIS_DATA.nonce
+    )
+
+    // create a valid block
     return new Block(
-      genesisBlockData.data,
-      genesisBlockData.timestamp,
-      genesisBlockData.difficulty,
-      genesisBlockData.nonce,
-      genesisBlockData.prevHash,
-      genesisBlockData.hash
+      GENESIS_DATA.data,
+      GENESIS_DATA.timestamp,
+      GENESIS_DATA.difficulty,
+      GENESIS_DATA.nonce,
+      GENESIS_DATA.prevHash,
+      GENESIS_DATA.hash
     )
   }
 }
+
+export default Block
