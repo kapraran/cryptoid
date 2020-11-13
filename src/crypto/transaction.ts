@@ -8,30 +8,22 @@ class Transaction {
   public outputMap: OutputMap
   public input: TransactionInput
 
-  constructor(senderWallet: Wallet, recipient: string, amount: number, outputMap?: OutputMap, input?: TransactionInput) {
-    this.id = uuid()
-    this.outputMap = outputMap || this.createOutputMap(senderWallet, recipient, amount)
-    this.input = input || this.createInput(senderWallet, this.outputMap)
+  constructor(id: string, outputMap: OutputMap, input: TransactionInput) {
+    this.id = id
+    this.outputMap = outputMap
+    this.input = input
   }
 
-  createOutputMap(senderWallet: Wallet, recipient: string, amount: number) {
-    const outputMap: OutputMap = {}
-    outputMap[recipient] = amount
-    outputMap[senderWallet.publicKey] = senderWallet.balance - amount
-
-    return outputMap
-  }
-
-  createInput(
+  static create(
     senderWallet: Wallet,
-    outputMap: OutputMap
-  ): TransactionInput {
-    return {
-      timestamp: Date.now(),
-      address: senderWallet.publicKey,
-      amount: senderWallet.balance,
-      signature: senderWallet.sign(outputMap),
-    }
+    recipient: string,
+    amount: number,
+  ) {
+    const id = uuid()
+    const outputMap = Transaction.createOutputMap(senderWallet, recipient, amount)
+    const input =  Transaction.createInput(senderWallet, outputMap)
+
+    return new Transaction(id, outputMap, input)
   }
 
   update(senderWallet: Wallet, newRecipient: string, newAmount: number) {
@@ -51,6 +43,23 @@ class Transaction {
     // update input field
     this.input.timestamp = Date.now()
     this.input.signature = senderWallet.sign(this.outputMap)
+  }
+
+  static createOutputMap(senderWallet: Wallet, recipient: string, amount: number) {
+    const outputMap: OutputMap = {}
+    outputMap[recipient] = amount
+    outputMap[senderWallet.publicKey] = senderWallet.balance - amount
+
+    return outputMap
+  }
+
+  static createInput(senderWallet: Wallet, outputMap: OutputMap): TransactionInput {
+    return {
+      timestamp: Date.now(),
+      address: senderWallet.publicKey,
+      amount: senderWallet.balance,
+      signature: senderWallet.sign(outputMap),
+    }
   }
 
   static isValidTransaction(transaction: Transaction) {
@@ -89,15 +98,7 @@ class Transaction {
    * @param obj
    */
   static fromObject(obj: TransactionData) {
-    // create dummy transaction
-    const transaction = new Transaction(new Wallet(), 'none', 0.0)
-
-    // fill with object's data
-    transaction.id = obj.id
-    transaction.outputMap = obj.outputMap
-    transaction.input = obj.input
-
-    return transaction
+    return new Transaction(obj.id, obj.outputMap, obj.input)
   }
 }
 

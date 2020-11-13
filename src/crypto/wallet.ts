@@ -24,7 +24,7 @@ class Wallet {
   createTransaction(amount: number, recipientAddress: string) {
     if (amount > this.balance) throw new Error('Amount exceeds the balance')
 
-    return new Transaction(this, recipientAddress, amount)
+    return Transaction.create(this, recipientAddress, amount)
   }
 }
 

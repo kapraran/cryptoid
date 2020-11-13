@@ -13,7 +13,7 @@ export const MINE_REWARD = {
   input: {
     address: 'authorized-reward',
   },
-  amount: 50
+  amount: 50,
 }
 
 export const GENESIS_DATA = {

@@ -16,7 +16,7 @@ describe('Transaction', () => {
     recipientAddress = keyPair.getPublic().encode('hex', false)
     amount = 100.0
 
-    transaction = new Transaction(senderWallet, recipientAddress, amount)
+    transaction = Transaction.create(senderWallet, recipientAddress, amount)
   })
 
   it('has an id', () => {
@@ -181,7 +181,7 @@ describe('Transaction', () => {
   // describe('rewardTransaction()', () => {
   //   let minerWallet: Wallet
   //   let rewardTransaction: Transaction
-    
+
   //   beforeEach(() => {
   //     minerWallet = new Wallet()
   //     rewardTransaction = Transaction.rewardTransaction(minerWallet)

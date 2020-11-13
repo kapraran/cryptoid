@@ -10,7 +10,7 @@ describe('TransactionPool', () => {
   beforeEach(() => {
     transactionPool = new TransactionPool()
     wallet = new Wallet()
-    transaction = new Transaction(wallet, 'some-random-recipient', 25.0)
+    transaction = Transaction.create(wallet, 'some-random-recipient', 25.0)
   })
 
   describe('setTransaction()', () => {
@@ -33,12 +33,15 @@ describe('TransactionPool', () => {
 
   describe('getValidTransactions()', () => {
     let validTransactions: Transaction[]
+    let errorMock: jest.Mock
 
     beforeEach(() => {
       validTransactions = []
+      errorMock = jest.fn()
+      global.console.error = errorMock
 
       for (let i = 0; i < 10; i++) {
-        transaction = new Transaction(wallet, 'recipient-id', 15.0)
+        transaction = Transaction.create(wallet, 'recipient-id', 15.0)
 
         if (i % 3 === 0) {
           transaction.input.amount = 999999
@@ -54,6 +57,7 @@ describe('TransactionPool', () => {
 
     it('returns only the valid transactions', () => {
       expect(transactionPool.getValidTransactions()).toEqual(validTransactions)
+      expect(errorMock).toHaveBeenCalled()
     })
   })
 })

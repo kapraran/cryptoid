@@ -19,8 +19,8 @@ class TransactionPool {
   }
 
   getValidTransactions() {
-    return Array.from(this.transactionMap.values()).filter(
-      (transaction) => Transaction.isValidTransaction(transaction)
+    return Array.from(this.transactionMap.values()).filter((transaction) =>
+      Transaction.isValidTransaction(transaction)
     )
   }
 }
