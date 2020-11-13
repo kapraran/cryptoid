@@ -1,6 +1,15 @@
 import { GENESIS_DATA, MINE_RATE } from '../config'
 import { hashData, satisfiesDifficulty } from '../util/utils'
 
+export interface BlockData {
+  data: any
+  timestamp: number
+  difficulty: number
+  nonce: number
+  prevHash: string
+  hash: string
+}
+
 class Block {
   public data: any
   public timestamp: number
@@ -130,6 +139,10 @@ class Block {
     }
 
     return new Block(data, timestamp, difficulty, nonce, prevHash, hash)
+  }
+
+  static fromObject(obj: BlockData) {
+    return new Block(obj.data, obj.timestamp, obj.difficulty, obj.nonce, obj.prevHash, obj.hash)
   }
 }
 

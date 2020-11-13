@@ -1,4 +1,5 @@
 import redis, { RedisClient } from 'redis'
+import Block, { BlockData } from '../blockchain/block'
 import Blockchain from '../blockchain/blockchain'
 import { CHANNELS, REDIS_HOST } from '../config'
 
@@ -31,7 +32,7 @@ class PubSub {
     console.log('Message received')
 
     if (channel === CHANNELS.BLOCKCHAIN) {
-      const chain = JSON.parse(message)
+      const chain = JSON.parse(message).map((obj: BlockData) => Block.fromObject(obj))
       this.blockchain.replaceChain(chain)
     }
   }
