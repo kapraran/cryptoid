@@ -9,6 +9,12 @@ export const CHANNELS = {
 }
 export const REDIS_HOST = '192.168.10.17'
 export const PORT = 3000
+export const MINE_REWARD = {
+  input: {
+    address: 'authorized-reward',
+  },
+  amount: 50
+}
 
 export const GENESIS_DATA = {
   data: 'genesis-block-data',

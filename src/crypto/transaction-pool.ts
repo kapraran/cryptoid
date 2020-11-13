@@ -1,4 +1,5 @@
 import Transaction from './transaction'
+import Wallet from './wallet'
 
 class TransactionPool {
   public transactionMap: Map<string, Transaction>
@@ -14,6 +15,12 @@ class TransactionPool {
   getExistingTransaction(address: string) {
     return Array.from(this.transactionMap.values()).find(
       (transaction) => transaction.input.address === address
+    )
+  }
+
+  getValidTransactions() {
+    return Array.from(this.transactionMap.values()).filter(
+      (transaction) => Transaction.isValidTransaction(transaction)
     )
   }
 }

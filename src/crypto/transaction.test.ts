@@ -122,7 +122,7 @@ describe('Transaction', () => {
       let newAmount: number
 
       beforeEach(() => {
-        originalSignature = transaction.input.signature
+        originalSignature = transaction.input.signature!
         originalRemaining = transaction.outputMap[senderWallet.publicKey]
         newRecipient = 'some-random-key-123'
         newAmount = 5
@@ -177,4 +177,19 @@ describe('Transaction', () => {
       })
     })
   })
+
+  // describe('rewardTransaction()', () => {
+  //   let minerWallet: Wallet
+  //   let rewardTransaction: Transaction
+    
+  //   beforeEach(() => {
+  //     minerWallet = new Wallet()
+  //     rewardTransaction = Transaction.rewardTransaction(minerWallet)
+  //   })
+
+  //   it('creates a Transaction with the reward amount', () => {
+  //     expect(rewardTransaction instanceof Transaction).toBe(true)
+  //     expect(rewardTransaction.input).toBe(true)
+  //   })
+  // })
 })

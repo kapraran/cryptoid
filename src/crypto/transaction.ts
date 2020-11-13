@@ -1,34 +1,21 @@
-import { ec as EC } from 'elliptic'
 import { v1 as uuid } from 'uuid'
 import { verifySignature } from '../util/utils'
+import { OutputMap, TransactionData, TransactionInput } from './types'
 import Wallet from './wallet'
-
-export interface TransactionInput {
-  timestamp: number
-  address: string
-  amount: number
-  signature: EC.Signature
-}
-
-export interface TransactionData {
-  id: string
-  outputMap: { [key: string]: number }
-  input: TransactionInput
-}
 
 class Transaction {
   public id: string
-  public outputMap: { [key: string]: number }
+  public outputMap: OutputMap
   public input: TransactionInput
 
-  constructor(senderWallet: Wallet, recipient: string, amount: number) {
+  constructor(senderWallet: Wallet, recipient: string, amount: number, outputMap?: OutputMap, input?: TransactionInput) {
     this.id = uuid()
-    this.outputMap = this.createOutputMap(senderWallet, recipient, amount)
-    this.input = this.createInput(senderWallet, this.outputMap)
+    this.outputMap = outputMap || this.createOutputMap(senderWallet, recipient, amount)
+    this.input = input || this.createInput(senderWallet, this.outputMap)
   }
 
   createOutputMap(senderWallet: Wallet, recipient: string, amount: number) {
-    const outputMap: { [key: string]: number } = {}
+    const outputMap: OutputMap = {}
     outputMap[recipient] = amount
     outputMap[senderWallet.publicKey] = senderWallet.balance - amount
 
@@ -37,7 +24,7 @@ class Transaction {
 
   createInput(
     senderWallet: Wallet,
-    outputMap: { [key: string]: number }
+    outputMap: OutputMap
   ): TransactionInput {
     return {
       timestamp: Date.now(),
@@ -91,6 +78,26 @@ class Transaction {
     }
 
     return true
+  }
+
+  // static rewardTransaction(wallet: Wallet) {
+  //   return new Transaction(wallet, )
+  // }
+
+  /**
+   *
+   * @param obj
+   */
+  static fromObject(obj: TransactionData) {
+    // create dummy transaction
+    const transaction = new Transaction(new Wallet(), 'none', 0.0)
+
+    // fill with object's data
+    transaction.id = obj.id
+    transaction.outputMap = obj.outputMap
+    transaction.input = obj.input
+
+    return transaction
   }
 }
 

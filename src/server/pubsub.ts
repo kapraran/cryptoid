@@ -3,8 +3,9 @@ import redis, { RedisClient } from 'redis'
 import Block, { BlockData } from '../blockchain/block'
 import Blockchain from '../blockchain/blockchain'
 import { CHANNELS, REDIS_HOST } from '../config'
-import Transaction, { TransactionData } from '../wallet/transaction'
-import TransactionPool from '../wallet/transaction-pool'
+import Transaction from '../crypto/transaction'
+import TransactionPool from '../crypto/transaction-pool'
+import { TransactionData } from '../crypto/types'
 
 class PubSub {
   public blockchain: Blockchain
@@ -49,7 +50,7 @@ class PubSub {
         break
       case CHANNELS.TRANSACTION:
         this.transactionPool.setTransaction(
-          new Transaction(parsedMessage as TransactionData)
+          Transaction.fromObject(parsedMessage as TransactionData)
         )
         break
       default:
