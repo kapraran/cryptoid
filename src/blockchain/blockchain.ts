@@ -15,11 +15,8 @@ class Blockchain {
    * @param data
    */
   addData(data: any) {
-    const difficulty = 0
-    const nonce = 123
-    const prevHash = this.getLastBlock().hash
-
-    const block = Block.createBlock(data, difficulty, nonce, prevHash)
+    const prevBlock = this.getLastBlock()
+    const block = Block.mineBlock(prevBlock, data)
     this.chain.push(block)
 
     return block
@@ -56,14 +53,17 @@ class Blockchain {
       return false
     }
 
-    for (let i = 0; i < chain.length; i++) {
+    for (let i = 1; i < chain.length; i++) {
       const block = chain[i]
 
       // each of the block should be valid
       if (!block.isValid()) return false
 
       // each prevHash should match the hash of the previous block
-      if (i > 0 && block.prevHash !== chain[i - 1].hash) return false
+      if (block.prevHash !== chain[i - 1].hash) return false
+
+      // there shouldn't be a big jump between blocks
+      if (Math.abs(block.difficulty - chain[i - 1].difficulty) > 1) return false
     }
 
     return true

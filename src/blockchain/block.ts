@@ -83,10 +83,10 @@ class Block {
    */
   static nextDifficulty(prevBlock: Block, newTimestamp: number) {
     let { difficulty, timestamp } = prevBlock
-    if (newTimestamp - timestamp > MINE_RATE) difficulty -= 1
+    if (newTimestamp - timestamp >= MINE_RATE) difficulty -= 1
     if (newTimestamp - timestamp < MINE_RATE) difficulty += 1
 
-    return Math.max(0, difficulty)
+    return Math.max(1, difficulty)
   }
 
   /**

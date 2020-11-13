@@ -1,6 +1,9 @@
 import crypto from 'crypto'
 import { ec } from './ec'
 
+//@ts-ignore
+import hexToBinary from 'hex-to-binary'
+
 interface VerifySignatureParams {
   publicKey: string
   data: any
@@ -16,7 +19,7 @@ export const hashData = (...inputs: any[]) => {
 
   // convert to a sha265 hash
   const sha256 = crypto.createHash('sha256')
-  return sha256.update(str).digest('hex')
+  return hexToBinary(sha256.update(str).digest('hex'))
 }
 
 export const verifySignature = ({

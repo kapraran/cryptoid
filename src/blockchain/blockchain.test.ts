@@ -2,6 +2,7 @@ import Block from './block'
 import Blockchain from './blockchain'
 import faker from 'faker'
 import { FAKER_SEED } from '../config'
+import { hashData } from '../util/utils'
 
 faker.seed(FAKER_SEED)
 
@@ -39,8 +40,6 @@ describe('Blockchain', () => {
     })
 
     describe('has more than one block', () => {
-      let newData: string
-
       beforeEach(() => {
         // add some blocks
         blockchain.addData(faker.company.companyName())
@@ -55,6 +54,29 @@ describe('Blockchain', () => {
       describe('and the `prevHash` has changed', () => {
         it('returns false', () => {
           blockchain.getLastBlock().prevHash = faker.random.alphaNumeric(64)
+          expect(Blockchain.isValid(blockchain.chain)).toBe(false)
+        })
+      })
+
+      describe('prevent a difficulty jump', () => {
+        it('returns false', () => {
+          const prevHash = blockchain.getLastBlock().hash
+          const timestamp = Date.now()
+          const nonce = 0
+          const data = faker.random.word()
+          const difficulty = blockchain.getLastBlock().difficulty + 4
+          const hash = hashData(data, timestamp, difficulty, nonce, prevHash)
+
+          const badBlock = new Block(
+            data,
+            timestamp,
+            difficulty,
+            nonce,
+            prevHash,
+            hash
+          )
+          blockchain.chain.push(badBlock)
+
           expect(Blockchain.isValid(blockchain.chain)).toBe(false)
         })
       })

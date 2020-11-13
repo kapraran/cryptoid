@@ -107,9 +107,15 @@ describe('Block', () => {
   })
 
   describe('mineBlock()', () => {
-    const lastBlock = Block.getGenesis()
-    const data = faker.name.firstName()
-    const minedBlock = Block.mineBlock(lastBlock, data)
+    let lastBlock: Block
+    let data: any
+    let minedBlock: Block
+
+    beforeEach(() => {
+      lastBlock = Block.getGenesis()
+      data = faker.name.firstName()
+      minedBlock = Block.mineBlock(lastBlock, data)
+    })
 
     it('returns a valid Block', () => {
       expect(minedBlock instanceof Block).toBe(true)
@@ -140,29 +146,31 @@ describe('Block', () => {
         '0'.repeat(minedBlock.difficulty)
       )
     })
+
+    it('adjusts the difficulty', () => {
+      const possibleDifficulties = [
+        lastBlock.difficulty + 1,
+        Math.max(1, lastBlock.difficulty - 1),
+      ]
+      expect(possibleDifficulties.includes(minedBlock.difficulty)).toBe(true)
+    })
   })
 
   describe('nextDifficulty()', () => {
     it('raises the difficulty if mined quickly', () => {
       const newTimestamp = exampleBlock.timestamp + MINE_RATE / 2
 
-      expect(
-        Block.nextDifficulty(
-          exampleBlock,
-          newTimestamp
-        )
-      ).toEqual(exampleBlock.difficulty + 1)
+      expect(Block.nextDifficulty(exampleBlock, newTimestamp)).toEqual(
+        exampleBlock.difficulty + 1
+      )
     })
 
     it('lowers the difficulty if mined slowly', () => {
       const newTimestamp = exampleBlock.timestamp + MINE_RATE + 100
 
-      expect(
-        Block.nextDifficulty(
-          exampleBlock,
-          newTimestamp
-        )
-      ).toEqual(exampleBlock.difficulty - 1)
+      expect(Block.nextDifficulty(exampleBlock, newTimestamp)).toEqual(
+        Math.max(1, exampleBlock.difficulty - 1)
+      )
     })
   })
 })
