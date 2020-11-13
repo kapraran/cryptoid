@@ -1,3 +1,4 @@
+import Blockchain from '../blockchain/blockchain'
 import Transaction from './transaction'
 import TransactionPool from './transaction-pool'
 import Wallet from './wallet'
@@ -58,6 +59,39 @@ describe('TransactionPool', () => {
     it('returns only the valid transactions', () => {
       expect(transactionPool.getValidTransactions()).toEqual(validTransactions)
       expect(errorMock).toHaveBeenCalled()
+    })
+  })
+
+  describe('clear()', () => {
+    it('clears all transactions', () => {
+      transactionPool.clear()
+      expect(transactionPool.transactionMap.size).toEqual(0)
+    })
+  })
+
+  describe('clearBlockchainTransactions()', () => {
+    it('clears only the transactions that exists in the blockchain', () => {
+      const blockchain = new Blockchain()
+      const expectedTransactions = new Map<string, Transaction>()
+
+      for (let i = 0; i < 10; i++) {
+        const transaction = new Wallet().createTransaction(
+          2.0,
+          'some-random-addr'
+        )
+
+        transactionPool.setTransaction(transaction)
+
+        if (i % 2 === 0) {
+          blockchain.addData([transaction])
+        } else {
+          expectedTransactions.set(transaction.id, transaction)
+        }
+      }
+
+      transactionPool.clearBlockchainTransactions(blockchain.chain)
+
+      expect(transactionPool.transactionMap).toEqual(expectedTransactions)
     })
   })
 })

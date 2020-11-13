@@ -1,4 +1,5 @@
 import { v1 as uuid } from 'uuid'
+import { MINE_REWARD } from '../config'
 import { verifySignature } from '../util/utils'
 import { OutputMap, TransactionData, TransactionInput } from './types'
 import Wallet from './wallet'
@@ -14,14 +15,14 @@ class Transaction {
     this.input = input
   }
 
-  static create(
-    senderWallet: Wallet,
-    recipient: string,
-    amount: number,
-  ) {
+  static create(senderWallet: Wallet, recipient: string, amount: number) {
     const id = uuid()
-    const outputMap = Transaction.createOutputMap(senderWallet, recipient, amount)
-    const input =  Transaction.createInput(senderWallet, outputMap)
+    const outputMap = Transaction.createOutputMap(
+      senderWallet,
+      recipient,
+      amount
+    )
+    const input = Transaction.createInput(senderWallet, outputMap)
 
     return new Transaction(id, outputMap, input)
   }
@@ -45,7 +46,11 @@ class Transaction {
     this.input.signature = senderWallet.sign(this.outputMap)
   }
 
-  static createOutputMap(senderWallet: Wallet, recipient: string, amount: number) {
+  static createOutputMap(
+    senderWallet: Wallet,
+    recipient: string,
+    amount: number
+  ) {
     const outputMap: OutputMap = {}
     outputMap[recipient] = amount
     outputMap[senderWallet.publicKey] = senderWallet.balance - amount
@@ -53,7 +58,10 @@ class Transaction {
     return outputMap
   }
 
-  static createInput(senderWallet: Wallet, outputMap: OutputMap): TransactionInput {
+  static createInput(
+    senderWallet: Wallet,
+    outputMap: OutputMap
+  ): TransactionInput {
     return {
       timestamp: Date.now(),
       address: senderWallet.publicKey,
@@ -89,9 +97,19 @@ class Transaction {
     return true
   }
 
-  // static rewardTransaction(wallet: Wallet) {
-  //   return new Transaction(wallet, )
-  // }
+  /**
+   *
+   * @param wallet
+   */
+  static rewardTransaction(wallet: Wallet) {
+    return new Transaction(
+      uuid(),
+      {
+        [wallet.publicKey]: MINE_REWARD.amount,
+      },
+      MINE_REWARD.input
+    )
+  }
 
   /**
    *

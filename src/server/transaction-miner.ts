@@ -1,5 +1,6 @@
 import Block from '../blockchain/block'
 import Blockchain from '../blockchain/blockchain'
+import Transaction from '../crypto/transaction'
 import TransactionPool from '../crypto/transaction-pool'
 import Wallet from '../crypto/wallet'
 import PubSub from './pubsub'
@@ -24,10 +25,20 @@ class TransactionMiner {
 
   mineTransaction() {
     // get valid transactions from pool
+    const transactions = this.transactionPool.getValidTransactions()
+
     // generate award for miners
+    const reward = Transaction.rewardTransaction(this.wallet)
+    transactions.push(reward)
+
     // add a block of these transactions to the blockchain
+    this.blockchain.addData(transactions)
+
     // broadcast updated blockchain
+    this.pubsub.broadcastChain()
+
     // clear the pool
+    this.transactionPool.clear()
   }
 }
 

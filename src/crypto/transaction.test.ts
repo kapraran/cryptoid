@@ -1,4 +1,5 @@
 import { ec as EC } from 'elliptic'
+import { MINE_REWARD } from '../config'
 import { ec } from '../util/ec'
 import { verifySignature } from '../util/utils'
 import Transaction from './transaction'
@@ -178,18 +179,24 @@ describe('Transaction', () => {
     })
   })
 
-  // describe('rewardTransaction()', () => {
-  //   let minerWallet: Wallet
-  //   let rewardTransaction: Transaction
+  describe('rewardTransaction()', () => {
+    let minerWallet: Wallet
+    let rewardTransaction: Transaction
 
-  //   beforeEach(() => {
-  //     minerWallet = new Wallet()
-  //     rewardTransaction = Transaction.rewardTransaction(minerWallet)
-  //   })
+    beforeEach(() => {
+      minerWallet = new Wallet()
+      rewardTransaction = Transaction.rewardTransaction(minerWallet)
+    })
 
-  //   it('creates a Transaction with the reward amount', () => {
-  //     expect(rewardTransaction instanceof Transaction).toBe(true)
-  //     expect(rewardTransaction.input).toBe(true)
-  //   })
-  // })
+    it('creates a Transaction with the reward input', () => {
+      expect(rewardTransaction instanceof Transaction).toBe(true)
+      expect(rewardTransaction.input).toEqual(MINE_REWARD.input)
+    })
+
+    it('creates a Transaction with the reward amount for the miner', () => {
+      expect(rewardTransaction.outputMap[minerWallet.publicKey]).toEqual(
+        MINE_REWARD.amount
+      )
+    })
+  })
 })
