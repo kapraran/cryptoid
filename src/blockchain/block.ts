@@ -142,7 +142,14 @@ class Block {
   }
 
   static fromObject(obj: BlockData) {
-    return new Block(obj.data, obj.timestamp, obj.difficulty, obj.nonce, obj.prevHash, obj.hash)
+    return new Block(
+      obj.data,
+      obj.timestamp,
+      obj.difficulty,
+      obj.nonce,
+      obj.prevHash,
+      obj.hash
+    )
   }
 }
 

@@ -10,6 +10,12 @@ export interface TransactionInput {
   signature: EC.Signature
 }
 
+export interface TransactionData {
+  id: string
+  outputMap: { [key: string]: number }
+  input: TransactionInput
+}
+
 class Transaction {
   public id: string
   public outputMap: { [key: string]: number }

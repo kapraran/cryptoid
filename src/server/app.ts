@@ -1,20 +1,36 @@
-import express from 'express'
+import express, { response } from 'express'
 import bodyParser from 'body-parser'
-import Transaction from '../wallet/transaction'
 import TransactionPool from '../wallet/transaction-pool'
 import Wallet from '../wallet/wallet'
 import Blockchain from '../blockchain/blockchain'
 import PubSub from './pubsub'
+import got from 'got'
+import { PORT } from '../config'
+import Block, { BlockData } from '../blockchain/block'
 
 export const app = express()
+
 const blockchain = new Blockchain()
 const transactionPool = new TransactionPool()
-const wallet = new Wallet()
-const pubsub = new PubSub(blockchain)
 
-setTimeout(() => {
-  pubsub.broadcastChain()
-}, 2000)
+const wallet = new Wallet()
+const pubsub = new PubSub(blockchain, transactionPool)
+const rootNode = `http://127.0.0.1:${PORT}`
+
+const syncChains = () => {
+  got(`${rootNode}/api/blocks`, {
+    responseType: 'json',
+  }).then((response) => {
+    const chain = (response.body as BlockData[]).map((obj: BlockData) =>
+      Block.fromObject(obj)
+    )
+    blockchain.replaceChain(chain)
+  })
+}
+
+if (process.env.START_AS_PEER === 'true') {
+  syncChains()
+}
 
 app.use(bodyParser.json())
 
@@ -28,10 +44,9 @@ app.get('/api/blocks', (req, res) => {
 
 app.post('/api/mine', (req, res) => {
   const { data } = req.body
-  const block = blockchain.addData(data)
+  blockchain.addData(data)
   pubsub.broadcastChain()
 
-  // res.json(block)
   res.redirect('/api/blocks')
 })
 

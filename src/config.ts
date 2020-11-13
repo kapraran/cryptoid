@@ -5,6 +5,7 @@ export const STARTING_BALANCE = 1000.0
 export const CHANNELS = {
   TEST: 'TEST',
   BLOCKCHAIN: 'BLOCKCHAIN',
+  TRANSACTION: 'TRANSACTION',
 }
 export const REDIS_HOST = '192.168.10.17'
 export const PORT = 3000
