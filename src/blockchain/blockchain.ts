@@ -33,11 +33,12 @@ class Blockchain {
    *
    * @param newChain
    */
-  replaceChain(newChain: Block[]) {
+  replaceChain(newChain: Block[], onSuccess?: () => void) {
     if (newChain.length <= this.chain.length) return false
 
     if (Blockchain.isValid(newChain)) {
       this.chain = newChain
+      if (onSuccess) onSuccess()
       return true
     }
 

@@ -46,7 +46,9 @@ class PubSub {
         const chain = (parsedMessage as BlockData[]).map((obj: BlockData) =>
           Block.fromObject(obj)
         )
-        this.blockchain.replaceChain(chain)
+        this.blockchain.replaceChain(chain, () => {
+          this.transactionPool.clearBlockchainTransactions(chain)
+        })
         break
       case CHANNELS.TRANSACTION:
         this.transactionPool.setTransaction(

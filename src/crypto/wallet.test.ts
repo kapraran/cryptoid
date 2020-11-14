@@ -1,3 +1,5 @@
+import Blockchain from '../blockchain/blockchain'
+import { STARTING_BALANCE } from '../config'
 import { verifySignature } from '../util/utils'
 import Transaction from './transaction'
 import Wallet from './wallet'
@@ -76,6 +78,42 @@ describe('Wallet', () => {
       it('outputs the difference for the sender', () => {
         expect(transaction.outputMap[wallet.publicKey]).toEqual(
           wallet.balance - amount
+        )
+      })
+    })
+  })
+
+  describe('calculateBalance()', () => {
+    let blockchain: Blockchain
+
+    beforeEach(() => {
+      blockchain = new Blockchain()
+    })
+
+    describe('when there are no transactions related to the wallet', () => {
+      it('returns the starting balance', () => {
+        expect(wallet.calculateBalance(blockchain.chain)).toEqual(
+          STARTING_BALANCE
+        )
+      })
+    })
+
+    describe('when there are a few transactions related to the wallet', () => {
+      let transaction1: Transaction
+      let transaction2: Transaction
+
+      beforeEach(() => {
+        transaction1 = new Wallet().createTransaction(100, wallet.publicKey)
+        transaction2 = new Wallet().createTransaction(200, wallet.publicKey)
+
+        blockchain.addData([transaction1, transaction2])
+      })
+
+      it('adds the sum to the wallet balance', () => {
+        expect(wallet.calculateBalance(blockchain.chain)).toEqual(
+          STARTING_BALANCE +
+            transaction1.outputMap[wallet.publicKey] +
+            transaction2.outputMap[wallet.publicKey]
         )
       })
     })
