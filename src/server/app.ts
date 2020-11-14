@@ -59,7 +59,11 @@ app.post('/api/transact', (req, res) => {
     if (transaction !== undefined) {
       transaction.update(wallet, recipient, amount)
     } else {
-      transaction = wallet.createTransaction(amount, recipient)
+      transaction = wallet.createTransaction(
+        amount,
+        recipient,
+        blockchain.chain
+      )
     }
   } catch (error) {
     return res.status(400).json({ type: 'error', message: error.message })
@@ -81,4 +85,11 @@ app.get('/api/mine-transactions', (req, res) => {
   miner.mineTransaction()
 
   res.redirect('/api/blocks')
+})
+
+app.get('/api/wallet-info', (req, res) => {
+  res.json({
+    address: wallet.publicKey,
+    balance: wallet.calculateBalance(blockchain.chain),
+  })
 })

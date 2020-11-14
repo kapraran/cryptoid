@@ -18,19 +18,46 @@ class Wallet {
     this.publicKey = this.keyPair.getPublic().encode('hex', false)
   }
 
+  /**
+   * Sings the data using the wallet's keypair
+   *
+   * @param data
+   */
   sign(data: any) {
     return this.keyPair.sign(hashData(data))
   }
 
-  createTransaction(amount: number, recipientAddress: string) {
+  /**
+   *
+   * @param amount
+   * @param recipientAddress
+   * @param chain
+   */
+  createTransaction(amount: number, recipientAddress: string, chain?: Block[]) {
+    // update wallet's balance if a chain is passed
+    if (chain) this.balance = this.calculateBalance(chain)
+
     if (amount > this.balance) throw new Error('Amount exceeds the balance')
 
     return Transaction.create(this, recipientAddress, amount)
   }
 
+  /**
+   * Calculates the balance of the wallet based on the
+   * transactions of the passed `chain`
+   *
+   * @param chain
+   */
   calculateBalance(chain: Block[]) {
-    const address = this.publicKey
+    return Wallet.calculateBalanceForAddress(this.publicKey, chain)
+  }
 
+  /**
+   *
+   * @param address
+   * @param chain
+   */
+  static calculateBalanceForAddress(address: string, chain: Block[]) {
     return chain.slice(1).reduce<number>((total, block) => {
       const transactions = block.data as Transaction[]
       return transactions.reduce<number>((total, transaction) => {

@@ -3,6 +3,8 @@ import Blockchain from './blockchain'
 import faker from 'faker'
 import { FAKER_SEED } from '../config'
 import { hashData } from '../util/utils'
+import Transaction from '../crypto/transaction'
+import Wallet from '../crypto/wallet'
 
 faker.seed(FAKER_SEED)
 
@@ -112,14 +114,17 @@ describe('Blockchain', () => {
 
     describe('when the chain is not longer', () => {
       it('does not replace the chain', () => {
-        const wasReplaced = blockchain.replaceChain([
-          Block.createBlock(
-            faker.name.firstName(),
-            0,
-            faker.random.number(),
-            faker.random.alphaNumeric(16)
-          ),
-        ])
+        const wasReplaced = blockchain.replaceChain(
+          [
+            Block.createBlock(
+              faker.name.firstName(),
+              0,
+              faker.random.number(),
+              faker.random.alphaNumeric(16)
+            ),
+          ],
+          false
+        )
 
         expect(wasReplaced).toBe(false)
         expect(blockchain.chain).toEqual(originalChain)
@@ -128,15 +133,105 @@ describe('Blockchain', () => {
 
     describe('when the chain is longer', () => {
       it('replaces the chain if it is valid', () => {
-        blockchain.replaceChain(newChain)
+        blockchain.replaceChain(newChain, false)
         expect(blockchain.chain).toEqual(newChain)
       })
 
       it('does not replaces the chain if it is invalid', () => {
         newChain[1].data = faker.random.word()
 
-        blockchain.replaceChain(newChain)
+        blockchain.replaceChain(newChain, false)
         expect(blockchain.chain).not.toEqual(newChain)
+      })
+    })
+  })
+
+  describe('validTransactionData()', () => {
+    let transaction: Transaction
+    let wallet: Wallet
+    let rewardTransaction: Transaction
+    let newBlockchain: Blockchain
+
+    beforeEach(() => {
+      wallet = new Wallet()
+      newBlockchain = new Blockchain()
+      transaction = wallet.createTransaction(100, 'food-address')
+      rewardTransaction = Transaction.rewardTransaction(wallet)
+    })
+
+    describe('transaction data is valid', () => {
+      it('return true', () => {
+        newBlockchain.addData([transaction, rewardTransaction])
+        expect(blockchain.validTransactionData(newBlockchain.chain)).toBe(true)
+      })
+    })
+
+    describe('transaction data is invalid', () => {
+      describe('when it has multiple reward transactions', () => {
+        it('returns false', () => {
+          newBlockchain.addData([
+            transaction,
+            rewardTransaction,
+            rewardTransaction,
+          ])
+          expect(blockchain.validTransactionData(newBlockchain.chain)).toBe(
+            false
+          )
+        })
+      })
+
+      describe('and it has one or more malformed outputMap', () => {
+        describe('and the transaction is not a rewad', () => {
+          it('returns false', () => {
+            transaction.outputMap[wallet.publicKey] = 99999
+            newBlockchain.addData([transaction, rewardTransaction])
+            expect(blockchain.validTransactionData(newBlockchain.chain)).toBe(
+              false
+            )
+          })
+        })
+
+        describe('and the transaction is a rewad', () => {
+          it('returns false', () => {
+            rewardTransaction.outputMap[wallet.publicKey] = 99999
+            newBlockchain.addData([transaction, rewardTransaction])
+            expect(blockchain.validTransactionData(newBlockchain.chain)).toBe(
+              false
+            )
+          })
+        })
+      })
+
+      describe('and it has one or more malformed input', () => {
+        it('returns false', () => {
+          wallet.balance = 99999
+
+          const badOutputMap = {
+            [wallet.publicKey]: 99999 - 100,
+            randomAddress: 100,
+          }
+
+          const badTransaction = new Transaction('abc', badOutputMap, {
+            timestamp: Date.now(),
+            amount: wallet.balance,
+            address: wallet.publicKey,
+            signature: wallet.sign(badOutputMap),
+          })
+
+          newBlockchain.addData([badTransaction, rewardTransaction])
+          expect(blockchain.validTransactionData(newBlockchain.chain)).toBe(
+            false
+          )
+        })
+      })
+
+      describe('and a block contains multiple identical transactions', () => {
+        it('returns false', () => {
+          newBlockchain.addData([transaction, transaction, rewardTransaction])
+          expect(blockchain.validTransactionData(newBlockchain.chain)).toBe(
+            false
+          )
+        })
       })
     })
   })

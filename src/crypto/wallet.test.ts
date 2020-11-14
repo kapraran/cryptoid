@@ -116,6 +116,49 @@ describe('Wallet', () => {
             transaction2.outputMap[wallet.publicKey]
         )
       })
+
+      describe('and the wallet has made a transaction', () => {
+        let recentTransaction: Transaction
+
+        beforeEach(() => {
+          recentTransaction = wallet.createTransaction(
+            12.45,
+            'some-rand-address'
+          )
+          blockchain.addData([recentTransaction])
+        })
+
+        it('returns the output of the recent transaction', () => {
+          expect(wallet.calculateBalance(blockchain.chain)).toEqual(
+            recentTransaction.outputMap[wallet.publicKey]
+          )
+        })
+
+        describe('and there are outputs next to and after the transaction', () => {
+          let sameBlockTransaction: Transaction
+          let nextBlockTransaction: Transaction
+
+          beforeEach(() => {
+            recentTransaction = wallet.createTransaction(44, 'some-address-2')
+            sameBlockTransaction = Transaction.rewardTransaction(wallet)
+            blockchain.addData([recentTransaction, sameBlockTransaction])
+
+            nextBlockTransaction = new Wallet().createTransaction(
+              23.2201,
+              wallet.publicKey
+            )
+            blockchain.addData([nextBlockTransaction])
+          })
+
+          it('includes the output amounts of the recent, related to wallet, transactions', () => {
+            expect(wallet.calculateBalance(blockchain.chain)).toEqual(
+              recentTransaction.outputMap[wallet.publicKey] +
+                sameBlockTransaction.outputMap[wallet.publicKey] +
+                nextBlockTransaction.outputMap[wallet.publicKey]
+            )
+          })
+        })
+      })
     })
   })
 })

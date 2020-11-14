@@ -1,4 +1,6 @@
-import { MINE_RATE } from '../config'
+import { MINE_RATE, MINE_REWARD } from '../config'
+import Transaction from '../crypto/transaction'
+import Wallet from '../crypto/wallet'
 import Block from './block'
 
 class Blockchain {
@@ -33,16 +35,70 @@ class Blockchain {
    *
    * @param newChain
    */
-  replaceChain(newChain: Block[], onSuccess?: () => void) {
+  replaceChain(
+    newChain: Block[],
+    validateTransactionData: boolean = true,
+    onSuccess?: () => void
+  ) {
     if (newChain.length <= this.chain.length) return false
 
-    if (Blockchain.isValid(newChain)) {
+    if (
+      Blockchain.isValid(newChain) &&
+      (!validateTransactionData ||
+        (this.validTransactionData(newChain) &&
+          this.validTransactionData(newChain)))
+    ) {
       this.chain = newChain
       if (onSuccess) onSuccess()
       return true
     }
 
     return false
+  }
+
+  /**
+   *
+   * @param chain
+   */
+  validTransactionData(chain: Block[]) {
+    for (let i = 1; i < chain.length; i++) {
+      const block = chain[i]
+      const transactionSet = new Set()
+      let rewardTransactions = 0
+      const transactions = block.data as Transaction[]
+
+      for (let transaction of transactions) {
+        // check reward transactions
+        if (transaction.input.address === MINE_REWARD.input.address) {
+          rewardTransactions++
+
+          // check for multiple reward transactions
+          if (rewardTransactions > 1) return false
+
+          // check mine reward amount
+          if (Object.values(transaction.outputMap)[0] !== MINE_REWARD.amount)
+            return false
+        }
+
+        // check non-reward transactions
+        else {
+          if (!Transaction.isValidTransaction(transaction)) return false
+
+          const balance = Wallet.calculateBalanceForAddress(
+            transaction.input.address,
+            this.chain
+          )
+          if (transaction.input.amount !== balance) return false
+        }
+
+        if (transactionSet.has(transaction.id)) return false
+        transactionSet.add(transaction.id)
+      }
+
+      if (rewardTransactions !== 1) return false
+    }
+
+    return true
   }
 
   /**
