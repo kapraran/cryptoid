@@ -45,8 +45,7 @@ class Blockchain {
     if (
       Blockchain.isValid(newChain) &&
       (!validateTransactionData ||
-        (this.validTransactionData(newChain) &&
-          this.validTransactionData(newChain)))
+        (validateTransactionData && this.validTransactionData(newChain)))
     ) {
       this.chain = newChain
       if (onSuccess) onSuccess()
@@ -86,7 +85,8 @@ class Blockchain {
 
           const balance = Wallet.calculateBalanceForAddress(
             transaction.input.address,
-            this.chain
+            // this.chain
+            chain
           )
           if (transaction.input.amount !== balance) return false
         }

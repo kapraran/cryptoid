@@ -5,10 +5,13 @@ import Wallet from '../crypto/wallet'
 import Blockchain from '../blockchain/blockchain'
 import PubSub from './pubsub'
 import got from 'got'
-import { PORT } from '../config'
+import { GENESIS_DATA, PORT } from '../config'
 import Block, { BlockData } from '../blockchain/block'
 import TransactionMiner from './transaction-miner'
 import path from 'path'
+import { generateTransactionBlocks, generateWallets } from './seeder'
+import Transaction from '../crypto/transaction'
+import { TransactionData } from '../crypto/types'
 
 export const app = express()
 const rootNode = `http://127.0.0.1:${PORT}`
@@ -25,10 +28,16 @@ const syncChains = () => {
   got(`${rootNode}/api/blocks`, {
     responseType: 'json',
   }).then((response) => {
-    const chain = (response.body as BlockData[]).map((obj: BlockData) =>
-      Block.fromObject(obj)
-    )
-    blockchain.replaceChain(chain)
+    const newChain = (response.body as BlockData[])
+      .map((obj: BlockData) => Block.fromObject(obj))
+      .map((block) => {
+        if (block.hash === GENESIS_DATA.hash) return block
+        block.data = (block.data as TransactionData[]).map(
+          (data) => new Transaction(data.id, data.outputMap, data.input)
+        )
+        return block
+      })
+    blockchain.replaceChain(newChain, false)
   })
 }
 
@@ -81,7 +90,7 @@ app.get('/api/transaction-pool-map', (req, res) => {
 })
 
 app.get('/api/mine-transactions', (req, res) => {
-  miner.mineTransaction()
+  miner.mineTransactions()
 
   res.redirect('/api/blocks')
 })
@@ -96,3 +105,15 @@ app.get('/api/wallet-info', (req, res) => {
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../../dist/index.html'))
 })
+
+// if root node, then seed server with random data
+if (process.env.START_AS_PEER !== 'true') {
+  generateTransactionBlocks(
+    10,
+    3,
+    generateWallets(4),
+    blockchain.chain,
+    transactionPool,
+    miner
+  )
+}

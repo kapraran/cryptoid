@@ -38,10 +38,10 @@
   },
   "scripts": {
     "start": "node lib/server/server.js",
-    "dev": "nodemon lib/server/server.js",
-    "dev:peer": "cross-env START_AS_PEER='true' nodemon lib/server/server.js",
+    "server": "nodemon lib/server/server.js",
+    "server:peer": "cross-env START_AS_PEER='true' nodemon lib/server/server.js",
     "type-check": "tsc --noEmit",
-    "type-check:watch": "tsc -w",
+    "ts:watch": "tsc -w",
     "build": "npm run build:types && npm run build:js",
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
