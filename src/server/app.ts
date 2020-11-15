@@ -8,6 +8,7 @@ import got from 'got'
 import { PORT } from '../config'
 import Block, { BlockData } from '../blockchain/block'
 import TransactionMiner from './transaction-miner'
+import path from 'path'
 
 export const app = express()
 const rootNode = `http://127.0.0.1:${PORT}`
@@ -17,6 +18,8 @@ const transactionPool = new TransactionPool()
 const wallet = new Wallet()
 const pubsub = new PubSub(blockchain, transactionPool)
 const miner = new TransactionMiner(blockchain, transactionPool, wallet, pubsub)
+
+app.use(express.static(path.join(__dirname, '../../dist')))
 
 const syncChains = () => {
   got(`${rootNode}/api/blocks`, {
@@ -34,10 +37,6 @@ if (process.env.START_AS_PEER === 'true') {
 }
 
 app.use(bodyParser.json())
-
-app.get('/', (req, res) => {
-  res.send('hello cryptoid!')
-})
 
 app.get('/api/blocks', (req, res) => {
   res.json(blockchain.chain)
@@ -92,4 +91,8 @@ app.get('/api/wallet-info', (req, res) => {
     address: wallet.publicKey,
     balance: wallet.calculateBalance(blockchain.chain),
   })
+})
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../dist/index.html'))
 })
