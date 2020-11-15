@@ -2,7 +2,7 @@
   <div class="container">
     <Header></Header>
     <Wallet></Wallet>
-    <Blocks></Blocks>
+    <router-view></router-view>
   </div>
 </template>
 

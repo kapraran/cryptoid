@@ -29,17 +29,18 @@ export default {
 <style lang="scss" scoped>
 .component.wallet {
   margin: 16px;
-  border: 1px dashed #000;
+  border: 2px dashed rgba(51, 105, 30, 0.24);
   padding: 16px;
+  background-color: #dcedc8;
 
   .label {
     display: inline-block;
     font-family: monospace;
     font-size: 14px;
     margin-bottom: 16px;
-    background-color: #000;
+    background-color: #33691e;
     color: #fff;
-    padding: 4px;
+    padding: 4px 8px;
   }
 
   h1.balance {

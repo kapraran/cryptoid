@@ -2,6 +2,8 @@ import Block from './block'
 import faker from 'faker'
 import { FAKER_SEED, MINE_RATE } from '../config'
 import { hashData } from '../util/utils'
+//@ts-ignore
+import hexToBinary from 'hex-to-binary'
 
 faker.seed(FAKER_SEED)
 
@@ -142,7 +144,8 @@ describe('Block', () => {
     })
 
     it('matches the difficulty', () => {
-      expect(minedBlock.hash.substring(0, minedBlock.difficulty)).toEqual(
+      const binaryHash = hexToBinary(minedBlock.hash)
+      expect(binaryHash.substring(0, minedBlock.difficulty)).toEqual(
         '0'.repeat(minedBlock.difficulty)
       )
     })

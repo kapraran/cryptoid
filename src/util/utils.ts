@@ -19,7 +19,7 @@ export const hashData = (...inputs: any[]) => {
 
   // convert to a sha265 hash
   const sha256 = crypto.createHash('sha256')
-  return hexToBinary(sha256.update(str).digest('hex'))
+  return sha256.update(str).digest('hex')
 }
 
 export const verifySignature = ({

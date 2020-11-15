@@ -1,5 +1,7 @@
 import { GENESIS_DATA, MINE_RATE } from '../config'
 import { hashData, satisfiesDifficulty } from '../util/utils'
+//@ts-ignore
+import hexToBinary from 'hex-to-binary'
 
 export interface BlockData {
   data: any
@@ -135,7 +137,7 @@ class Block {
       nonce++
       hash = hashData(data, timestamp, prevHash, difficulty, nonce)
 
-      if (satisfiesDifficulty(hash, difficulty)) break
+      if (satisfiesDifficulty(hexToBinary(hash), difficulty)) break
     }
 
     return new Block(data, timestamp, difficulty, nonce, prevHash, hash)

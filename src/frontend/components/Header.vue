@@ -22,7 +22,7 @@
   .logo {
     $_sz: 72px;
 
-    background-color: purple;
+    background-color: #673ab7;
     color: #fff;
     border-radius: 50%;
     width: $_sz;
