@@ -85,8 +85,7 @@ class Blockchain {
 
           const balance = Wallet.calculateBalanceForAddress(
             transaction.input.address,
-            // this.chain
-            chain
+            this.chain
           )
           if (transaction.input.amount !== balance) return false
         }

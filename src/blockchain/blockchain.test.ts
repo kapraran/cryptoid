@@ -10,9 +10,13 @@ faker.seed(FAKER_SEED)
 
 describe('Blockchain', () => {
   let blockchain: Blockchain
+  let errorMock: jest.Mock
 
   beforeEach(() => {
     blockchain = new Blockchain()
+    errorMock = jest.fn()
+
+    global.console.error = errorMock
   })
 
   it('starts with `genesis` block', () => {
