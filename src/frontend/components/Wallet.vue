@@ -1,7 +1,7 @@
 <template>
   <div class="component wallet">
     <span class="label">WALLET INFO</span>
-    <h1 class="balance">{{ balance }} CRTC</h1>
+    <h1 class="balance">{{ balance }} CRTD</h1>
     <h2 class="address">{{ address }}</h2>
   </div>
 </template>

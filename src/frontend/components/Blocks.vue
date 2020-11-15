@@ -9,23 +9,23 @@
       <div class="hash">Hash</div>
     </header>
     <ul class="blocks">
-      <Block
+      <BlockRow
         v-for="(block, i) in blocks"
         :key="block.hash"
         :timestamp="prevTimestamp(i)"
         :index="i"
         :block="block"
-      ></Block>
+      ></BlockRow>
     </ul>
   </div>
 </template>
 
 <script>
-import Block from './Block'
+import BlockRow from './BlockRow'
 
 export default {
   components: {
-    Block,
+    BlockRow,
   },
 
   data() {
@@ -45,7 +45,6 @@ export default {
     fetch('/api/blocks')
       .then((response) => response.json())
       .then((body) => {
-        console.log(body)
         this.blocks = body
       })
   },

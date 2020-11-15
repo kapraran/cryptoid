@@ -51,6 +51,18 @@ app.get('/api/blocks', (req, res) => {
   res.json(blockchain.chain)
 })
 
+app.get('/api/blocks/:index', (req, res) => {
+  const { index } = req.params
+  const indexNum = parseInt(index)
+
+  if (blockchain.chain.length <= indexNum) return res.json({ error: true })
+
+  res.json({
+    success: true,
+    block: blockchain.chain[indexNum],
+  })
+})
+
 app.post('/api/mine', (req, res) => {
   const { data } = req.body
   blockchain.addData(data)

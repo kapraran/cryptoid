@@ -1,81 +1,104 @@
 <template>
   <div class="component block">
-    <div class="index">
-      <a href="#">{{ index }}</a>
-    </div>
-    <div class="mined">
-      {{ timeToMine }}
-    </div>
-    <div class="miner">{{ minerHash }}...</div>
-    <div class="hash">
-      <a href="#">{{ partialHash }}...</a>
+    <div class="block-page" v-if="block !== null">
+      <h1 class="title">Block #{{ $route.params.index }}</h1>
+
+      <div class="block-data">
+        <div class="key-value-row">
+          <div class="key">Timestamp</div>
+          <div class="value">{{ niceTimestamp }}</div>
+        </div>
+
+        <div class="key-value-row">
+          <div class="key">Difficulty</div>
+          <div class="value">{{ block.difficulty }}</div>
+        </div>
+
+        <div class="key-value-row">
+          <div class="key">Hash</div>
+          <div class="value">{{ block.hash }}</div>
+        </div>
+
+        <div class="key-value-row">
+          <div class="key">Prev. Hash</div>
+          <div class="value">{{ block.prevHash }}</div>
+        </div>
+      </div>
+
+      <div class="transactions">
+        <h2 class="title">Transactions</h2>
+
+        <div class="transactions-list">
+          <Transaction
+            v-for="transaction in block.data"
+            :key="transaction.id"
+            :transaction="transaction"
+          ></Transaction>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import Block from '../../blockchain/block'
+import Transaction from './Transaction'
 
 export default {
-  props: {
-    index: Number,
-    block: Object,
-    timestamp: Number,
+  components: {
+    Transaction,
+  },
+
+  data() {
+    return {
+      block: null,
+    }
+  },
+
+  mounted() {
+    fetch(`/api/blocks/${this.$route.params.index}`)
+      .then((response) => response.json())
+      .then((body) => {
+        this.block = body.block
+      })
   },
 
   computed: {
-    partialHash() {
-      return this.block.hash.substring(0, 16)
-    },
-
-    minerHash() {
-      if (this.index === 0) return 'genesis'
-
-      const transactions = this.block.data
-      return Object.keys(
-        transactions[transactions.length - 1].outputMap
-      )[0].substring(0, 16)
-    },
-
-    timeToMine() {
-      if (this.timestamp < 1) return '-'
-      return `${this.block.timestamp - this.timestamp} ms`
+    niceTimestamp() {
+      return new Date(this.block.timestamp)
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.component.block {
-  display: flex;
-  flex-direction: row;
-  padding: 4px 0;
-  box-sizing: border-box;
+.component.block .block-page {
+  padding: 16px;
 
-  a {
-    color: blue;
-    text-decoration: none;
-    font-weight: 500;
+  h1.title {
+    padding: 0;
+    margin: 0 0 16px;
+    font-size: 28px;
+    font-weight: 600;
+  }
 
-    &:hover {
-      text-decoration: underline;
+  h2.title {
+    padding: 0;
+    margin: 16px 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .key-value-row {
+    display: flex;
+    flex-direction: row;
+    padding: 4px 0;
+
+    .key {
+      color: #aaa;
+      text-transform: uppercase;
+      font-size: 14px;
+      width: 15%;
     }
-  }
-
-  .index {
-    width: 12%;
-  }
-
-  .mined {
-    width: 24%;
-  }
-
-  .miner {
-    width: 32%;
-  }
-
-  .hash {
-    width: 32%;
   }
 }
 </style>
