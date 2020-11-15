@@ -3,20 +3,25 @@
     <span class="label">BLOCKS</span>
 
     <ul class="blocks">
-      <li class="block" v-for="(block, i) in blocks" :key="i">
-        {{ block.hash }}
-      </li>
+      <Block v-for="block in blocks" :key="block.hash" :block="block"></Block>
     </ul>
   </div>
 </template>
 
 <script>
+import Block from './Block'
+
 export default {
+  components: {
+    Block,
+  },
+
   data() {
     return {
       blocks: [],
     }
   },
+
   mounted() {
     fetch('/api/blocks')
       .then((response) => response.json())
@@ -41,6 +46,11 @@ export default {
     padding: 4px;
     font-size: 14px;
     font-family: monospace;
+  }
+
+  ul {
+    padding: 0;
+    margin: 0;
   }
 }
 </style>
