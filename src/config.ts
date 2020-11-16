@@ -25,5 +25,7 @@ export const GENESIS_DATA = {
   hash: '',
 }
 
+export const POLL_TRANSACTION_MAP_INTERVAL = 4000
+
 // used for testing
 export const FAKER_SEED = 2020

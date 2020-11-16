@@ -2,7 +2,7 @@
   <div class="component send-money">
     <h1 class="title">Send Money</h1>
 
-    <form @submit="sendMoney">
+    <form @submit.prevent="sendMoney">
       <input type="text" v-model="address" placeholder="address" />
       <input type="text" v-model="amount" placeholder="amount" />
 
@@ -37,7 +37,7 @@ export default {
       })
         .then((response) => response.json())
         .then((body) => {
-          console.log(body)
+          this.$router.push('/transaction-pool')
         })
     },
   },

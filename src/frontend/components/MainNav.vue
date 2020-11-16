@@ -1,7 +1,8 @@
 <template>
   <nav class="main-nav">
     <router-link :to="`/`">Home</router-link>
-    <router-link :to="`/send-money`">Send Money</router-link>
+    <router-link :to="`/create-transaction`">Create Transaction</router-link>
+    <router-link :to="`/transaction-pool`">Transaction Pool</router-link>
   </nav>
 </template>
 
