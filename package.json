@@ -50,7 +50,8 @@
     "test:watch": "jest --watch",
     "test": "jest",
     "prettier": "prettier --write src/",
-    "parcel": "parcel watch src/frontend/index.html"
+    "parcel:watch": "parcel watch src/frontend/index.html",
+    "parcel:build": "parcel build src/frontend/index.html"
   },
   "pre-commit": [
     "prettier"

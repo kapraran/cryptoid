@@ -30,6 +30,12 @@ class PubSub {
     )
   }
 
+  /**
+   * Publishes a message to a channel without receiving it back
+   *
+   * @param channel
+   * @param message
+   */
   publish(channel: string, message: string) {
     this.subscriber.unsubscribe(channel, () => {
       this.publisher.publish(channel, message, () => {
@@ -46,7 +52,9 @@ class PubSub {
         const chain = (parsedMessage as BlockData[]).map((obj: BlockData) =>
           Block.fromObject(obj)
         )
+        console.log('trying to replace the chain')
         this.blockchain.replaceChain(chain, true, () => {
+          console.log('chain replaced')
           this.transactionPool.clearBlockchainTransactions(chain)
         })
         break

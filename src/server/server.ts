@@ -8,5 +8,5 @@ if (process.env.START_AS_PEER === 'true') {
 }
 
 export const server = app.listen(port, '0.0.0.0', () =>
-  console.log(`Server started at ${port}`)
+  console.log(`Server started at http://localhost:${port}/`)
 )

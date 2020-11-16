@@ -103,7 +103,6 @@ app.get('/api/transaction-pool-map', (req, res) => {
 
 app.get('/api/mine-transactions', (req, res) => {
   miner.mineTransactions()
-
   res.redirect('/api/blocks')
 })
 

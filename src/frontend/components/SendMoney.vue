@@ -22,7 +22,23 @@ export default {
 
   methods: {
     sendMoney() {
-      console.log('submited!')
+      if (!this.address || this.address.trim().length < 6) return
+      if (!this.amount || (this.amount | 0) <= 0) return
+
+      const recipient = this.address.trim()
+      const amount = this.amount | 0
+
+      fetch(`/api/transact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ recipient, amount }),
+      })
+        .then((response) => response.json())
+        .then((body) => {
+          console.log(body)
+        })
     },
   },
 }
