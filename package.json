@@ -63,7 +63,7 @@
     "got": "11.8.0",
     "hex-to-binary": "1.0.1",
     "redis": "3.0.2",
-    "uuid": "8.3.1",
+    "uuid": "8.3.2",
     "vue": "2.6.12",
     "vue-hot-reload-api": "2.3.4"
   }
