@@ -7,7 +7,7 @@ export const CHANNELS = {
   BLOCKCHAIN: 'BLOCKCHAIN',
   TRANSACTION: 'TRANSACTION',
 }
-export const REDIS_HOST = '192.168.10.17'
+export const REDIS_HOST = '192.168.1.8'
 export const PORT = 3000
 export const MINE_REWARD = {
   input: {
