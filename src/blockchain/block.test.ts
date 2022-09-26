@@ -1,40 +1,40 @@
-import Block from './block'
-import faker from 'faker'
-import { FAKER_SEED, MINE_RATE } from '../config'
-import { hashData } from '../util/utils'
+import faker from 'faker';
+import { FAKER_SEED, MINE_RATE } from '../config';
+import { hashData } from '../util/utils';
+import Block from './block';
 //@ts-ignore
-import hexToBinary from 'hex-to-binary'
+import hexToBinary from 'hex-to-binary';
 
-faker.seed(FAKER_SEED)
+faker.seed(FAKER_SEED);
 
 describe('Block', () => {
-  let exampleBlock: Block
-  let data: any
-  let prevHash: string
-  let difficulty: number
-  let nonce: number
+  let exampleBlock: Block;
+  let data: any;
+  let prevHash: string;
+  let difficulty: number;
+  let nonce: number;
 
   beforeAll(() => {
-    data = faker.name.firstName()
-    prevHash = faker.random.alphaNumeric(64)
-    difficulty = 1
-    nonce = faker.random.number()
-    exampleBlock = Block.createBlock(data, difficulty, nonce, prevHash)
-  })
+    data = faker.name.firstName();
+    prevHash = faker.random.alphaNumeric(64);
+    difficulty = 1;
+    nonce = faker.random.number();
+    exampleBlock = Block.createBlock(data, difficulty, nonce, prevHash);
+  });
 
   it('create an instance of block', () => {
-    expect(exampleBlock.data).toEqual(data)
-    expect(exampleBlock.prevHash).toEqual(prevHash)
-    expect(exampleBlock.difficulty).toEqual(difficulty)
-    expect(exampleBlock.nonce).toEqual(nonce)
-  })
+    expect(exampleBlock.data).toEqual(data);
+    expect(exampleBlock.prevHash).toEqual(prevHash);
+    expect(exampleBlock.difficulty).toEqual(difficulty);
+    expect(exampleBlock.nonce).toEqual(nonce);
+  });
 
-  describe('isEqual()', () => {})
+  describe('isEqual()', () => {});
 
   describe('isValid()', () => {
     it('block is valid when is not manipulated', () => {
-      expect(exampleBlock.isValid()).toBe(true)
-    })
+      expect(exampleBlock.isValid()).toBe(true);
+    });
 
     it('block is invalid when any of its fields is changed', () => {
       const block1 = new Block(
@@ -44,7 +44,7 @@ describe('Block', () => {
         exampleBlock.nonce,
         exampleBlock.prevHash,
         exampleBlock.hash
-      )
+      );
       const block2 = new Block(
         exampleBlock.data,
         faker.random.number(),
@@ -52,7 +52,7 @@ describe('Block', () => {
         exampleBlock.nonce,
         exampleBlock.prevHash,
         exampleBlock.hash
-      )
+      );
       const block3 = new Block(
         exampleBlock.data,
         exampleBlock.timestamp,
@@ -60,7 +60,7 @@ describe('Block', () => {
         exampleBlock.nonce,
         exampleBlock.prevHash,
         exampleBlock.hash
-      )
+      );
       const block4 = new Block(
         exampleBlock.data,
         exampleBlock.timestamp,
@@ -68,7 +68,7 @@ describe('Block', () => {
         faker.random.number(),
         exampleBlock.prevHash,
         exampleBlock.hash
-      )
+      );
       const block5 = new Block(
         exampleBlock.data,
         exampleBlock.timestamp,
@@ -76,61 +76,61 @@ describe('Block', () => {
         exampleBlock.nonce,
         faker.random.alphaNumeric(64),
         exampleBlock.hash
-      )
+      );
 
-      expect(block1.isValid()).toBe(false)
-      expect(block2.isValid()).toBe(false)
-      expect(block3.isValid()).toBe(false)
-      expect(block4.isValid()).toBe(false)
-      expect(block5.isValid()).toBe(false)
-    })
-  })
+      expect(block1.isValid()).toBe(false);
+      expect(block2.isValid()).toBe(false);
+      expect(block3.isValid()).toBe(false);
+      expect(block4.isValid()).toBe(false);
+      expect(block5.isValid()).toBe(false);
+    });
+  });
 
   describe('getGenesis()', () => {
     it('returns a valid block', () => {
-      expect(Block.getGenesis() instanceof Block).toBe(true)
-    })
+      expect(Block.getGenesis() instanceof Block).toBe(true);
+    });
 
     it('always returns the same block', () => {
-      const blockA = Block.getGenesis()
-      const blockB = Block.getGenesis()
+      const blockA = Block.getGenesis();
+      const blockB = Block.getGenesis();
 
-      expect(blockA.isEqual(blockB)).toBe(true)
-    })
-  })
+      expect(blockA.isEqual(blockB)).toBe(true);
+    });
+  });
 
   describe('Block.hash', () => {
     it('is not the same for different input', () => {
-      const blockA = Block.createBlock(data, difficulty, nonce, prevHash)
-      const blockB = Block.createBlock(data, difficulty + 1, nonce, prevHash)
+      const blockA = Block.createBlock(data, difficulty, nonce, prevHash);
+      const blockB = Block.createBlock(data, difficulty + 1, nonce, prevHash);
 
-      expect(blockA.hash).not.toEqual(blockB.hash)
-    })
-  })
+      expect(blockA.hash).not.toEqual(blockB.hash);
+    });
+  });
 
   describe('mineBlock()', () => {
-    let lastBlock: Block
-    let data: any
-    let minedBlock: Block
+    let lastBlock: Block;
+    let data: any;
+    let minedBlock: Block;
 
     beforeEach(() => {
-      lastBlock = Block.getGenesis()
-      data = faker.name.firstName()
-      minedBlock = Block.mineBlock(lastBlock, data)
-    })
+      lastBlock = Block.getGenesis();
+      data = faker.name.firstName();
+      minedBlock = Block.mineBlock(lastBlock, data);
+    });
 
     it('returns a valid Block', () => {
-      expect(minedBlock instanceof Block).toBe(true)
-      expect(minedBlock.isValid()).toBe(true)
-    })
+      expect(minedBlock instanceof Block).toBe(true);
+      expect(minedBlock.isValid()).toBe(true);
+    });
 
     it('set the `prevHash` to genesis hash', () => {
-      expect(minedBlock.prevHash).toEqual(lastBlock.hash)
-    })
+      expect(minedBlock.prevHash).toEqual(lastBlock.hash);
+    });
 
     it('sets the `data`', () => {
-      expect(minedBlock.data).toEqual(data)
-    })
+      expect(minedBlock.data).toEqual(data);
+    });
 
     it('creates the expected hash based on the given input', () => {
       const hash = hashData(
@@ -139,41 +139,41 @@ describe('Block', () => {
         minedBlock.difficulty,
         minedBlock.nonce,
         lastBlock.hash
-      )
-      expect(minedBlock.hash).toEqual(hash)
-    })
+      );
+      expect(minedBlock.hash).toEqual(hash);
+    });
 
     it('matches the difficulty', () => {
-      const binaryHash = hexToBinary(minedBlock.hash)
+      const binaryHash = hexToBinary(minedBlock.hash);
       expect(binaryHash.substring(0, minedBlock.difficulty)).toEqual(
         '0'.repeat(minedBlock.difficulty)
-      )
-    })
+      );
+    });
 
     it('adjusts the difficulty', () => {
       const possibleDifficulties = [
         lastBlock.difficulty + 1,
         Math.max(1, lastBlock.difficulty - 1),
-      ]
-      expect(possibleDifficulties.includes(minedBlock.difficulty)).toBe(true)
-    })
-  })
+      ];
+      expect(possibleDifficulties.includes(minedBlock.difficulty)).toBe(true);
+    });
+  });
 
   describe('nextDifficulty()', () => {
     it('raises the difficulty if mined quickly', () => {
-      const newTimestamp = exampleBlock.timestamp + MINE_RATE / 2
+      const newTimestamp = exampleBlock.timestamp + MINE_RATE / 2;
 
       expect(Block.nextDifficulty(exampleBlock, newTimestamp)).toEqual(
         exampleBlock.difficulty + 1
-      )
-    })
+      );
+    });
 
     it('lowers the difficulty if mined slowly', () => {
-      const newTimestamp = exampleBlock.timestamp + MINE_RATE + 100
+      const newTimestamp = exampleBlock.timestamp + MINE_RATE + 100;
 
       expect(Block.nextDifficulty(exampleBlock, newTimestamp)).toEqual(
         Math.max(1, exampleBlock.difficulty - 1)
-      )
-    })
-  })
-})
+      );
+    });
+  });
+});

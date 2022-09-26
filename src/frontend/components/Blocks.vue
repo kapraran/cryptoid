@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import BlockRow from './BlockRow'
+import BlockRow from './BlockRow';
 
 export default {
   components: {
@@ -31,13 +31,13 @@ export default {
   data() {
     return {
       blocks: [],
-    }
+    };
   },
 
   methods: {
     prevTimestamp(index) {
-      if (index < 2) return 0
-      return this.blocks[index - 1].timestamp
+      if (index < 2) return 0;
+      return this.blocks[index - 1].timestamp;
     },
   },
 
@@ -45,10 +45,10 @@ export default {
     fetch('/api/blocks')
       .then((response) => response.json())
       .then((body) => {
-        this.blocks = body
-      })
+        this.blocks = body;
+      });
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

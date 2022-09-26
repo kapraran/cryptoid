@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import Transaction from './Transaction'
+import Transaction from './Transaction';
 
 export default {
   components: {
@@ -51,23 +51,23 @@ export default {
   data() {
     return {
       block: null,
-    }
+    };
   },
 
   mounted() {
     fetch(`/api/blocks/${this.$route.params.index}`)
       .then((response) => response.json())
       .then((body) => {
-        this.block = body.block
-      })
+        this.block = body.block;
+      });
   },
 
   computed: {
     niceTimestamp() {
-      return new Date(this.block.timestamp)
+      return new Date(this.block.timestamp);
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

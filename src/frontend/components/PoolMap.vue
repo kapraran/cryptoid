@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import { POLL_TRANSACTION_MAP_INTERVAL } from '../../config'
-import Transaction from './Transaction'
+import { POLL_TRANSACTION_MAP_INTERVAL } from '../../config';
+import Transaction from './Transaction';
 
 export default {
   components: {
@@ -29,24 +29,24 @@ export default {
     return {
       transactionPoolMap: {},
       pollInterval: null,
-    }
+    };
   },
 
   mounted() {
-    this.fetchPoolMap()
+    this.fetchPoolMap();
     this.pollInterval = setInterval(
       this.fetchPoolMap.bind(this),
       POLL_TRANSACTION_MAP_INTERVAL
-    )
+    );
   },
 
   beforeUnmount() {
-    clearInterval(this.pollInterval)
+    clearInterval(this.pollInterval);
   },
 
   beforeRouteLeave(to, from, next) {
-    clearInterval(this.pollInterval)
-    next()
+    clearInterval(this.pollInterval);
+    next();
   },
 
   methods: {
@@ -54,19 +54,19 @@ export default {
       fetch('/api/transaction-pool-map')
         .then((response) => response.json())
         .then((body) => {
-          if (body.type !== 'error') this.transactionPoolMap = body.map
-        })
+          if (body.type !== 'error') this.transactionPoolMap = body.map;
+        });
     },
 
     mineTransactions() {
       fetch('/api/mine-transactions')
         .then((response) => response.json())
         .then((body) => {
-          this.transactionPoolMap = {}
-        })
+          this.transactionPoolMap = {};
+        });
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

@@ -32,8 +32,8 @@
 </template>
 
 <script>
-import { DateTime } from 'luxon'
-import { MINE_REWARD } from '../../config'
+import { DateTime } from 'luxon';
+import { MINE_REWARD } from '../../config';
 
 export default {
   props: {
@@ -42,22 +42,22 @@ export default {
 
   computed: {
     isReward() {
-      return this.transaction.input.address === MINE_REWARD.input.address
+      return this.transaction.input.address === MINE_REWARD.input.address;
     },
 
     niceTimestamp() {
-      const date = new Date(this.transaction.input.timestamp)
-      const dt = DateTime.fromJSDate(date)
-      return dt.toLocaleString(DateTime.DATETIME_SHORT)
+      const date = new Date(this.transaction.input.timestamp);
+      const dt = DateTime.fromJSDate(date);
+      return dt.toLocaleString(DateTime.DATETIME_SHORT);
     },
   },
 
   methods: {
     fixedAmount(amount) {
-      return amount.toFixed(6)
+      return amount.toFixed(6);
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

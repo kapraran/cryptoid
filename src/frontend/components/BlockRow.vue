@@ -14,8 +14,6 @@
 </template>
 
 <script>
-import Block from '../../blockchain/block'
-
 export default {
   props: {
     index: Number,
@@ -25,28 +23,28 @@ export default {
 
   computed: {
     paddedIndex() {
-      return `${this.index}`.padStart(5, '0')
+      return `${this.index}`.padStart(5, '0');
     },
 
     partialHash() {
-      return this.block.hash.substring(0, 16)
+      return this.block.hash.substring(0, 16);
     },
 
     minerHash() {
-      if (this.index === 0) return 'genesis'
+      if (this.index === 0) return 'genesis';
 
-      const transactions = this.block.data
+      const transactions = this.block.data;
       return Object.keys(
         transactions[transactions.length - 1].outputMap
-      )[0].substring(0, 16)
+      )[0].substring(0, 16);
     },
 
     timeToMine() {
-      if (this.timestamp < 1) return '-'
-      return `${this.block.timestamp - this.timestamp} ms`
+      if (this.timestamp < 1) return '-';
+      return `${this.block.timestamp - this.timestamp} ms`;
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

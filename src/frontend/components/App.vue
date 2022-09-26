@@ -8,11 +8,11 @@
 </template>
 
 <script>
-import Header from './Header'
-import MainNav from './MainNav'
-import Wallet from './Wallet'
-import Blocks from './Blocks'
-import Vue from 'vue'
+import Vue from 'vue';
+import Blocks from './Blocks';
+import Header from './Header';
+import MainNav from './MainNav';
+import Wallet from './Wallet';
 
 export default Vue.extend({
   components: {
@@ -25,9 +25,9 @@ export default Vue.extend({
   data() {
     return {
       bundler: 'Parcel',
-    }
+    };
   },
-})
+});
 </script>
 
 <style lang="scss">

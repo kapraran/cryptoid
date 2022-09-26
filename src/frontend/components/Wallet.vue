@@ -12,18 +12,18 @@ export default {
     return {
       address: 'sdjfioasjfiasdfjiodfji',
       balance: 9999,
-    }
+    };
   },
 
   mounted() {
     fetch('/api/wallet-info')
       .then((response) => response.json())
       .then((body) => {
-        this.address = body.address
-        this.balance = body.balance
-      })
+        this.address = body.address;
+        this.balance = body.balance;
+      });
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

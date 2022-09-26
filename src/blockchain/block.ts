@@ -1,24 +1,24 @@
-import { GENESIS_DATA, MINE_RATE } from '../config'
-import { hashData, satisfiesDifficulty } from '../util/utils'
+import { GENESIS_DATA, MINE_RATE } from '../config';
+import { hashData, satisfiesDifficulty } from '../util/utils';
 //@ts-ignore
-import hexToBinary from 'hex-to-binary'
+import hexToBinary from 'hex-to-binary';
 
 export interface BlockData {
-  data: any
-  timestamp: number
-  difficulty: number
-  nonce: number
-  prevHash: string
-  hash: string
+  data: any;
+  timestamp: number;
+  difficulty: number;
+  nonce: number;
+  prevHash: string;
+  hash: string;
 }
 
 class Block {
-  public data: any
-  public timestamp: number
-  public difficulty: number
-  public nonce: number
-  public prevHash: string
-  public hash: string
+  public data: any;
+  public timestamp: number;
+  public difficulty: number;
+  public nonce: number;
+  public prevHash: string;
+  public hash: string;
 
   constructor(
     data: any,
@@ -28,12 +28,12 @@ class Block {
     prevHash: string,
     hash: string
   ) {
-    this.data = data
-    this.timestamp = timestamp
-    this.difficulty = difficulty
-    this.nonce = nonce
-    this.prevHash = prevHash
-    this.hash = hash
+    this.data = data;
+    this.timestamp = timestamp;
+    this.difficulty = difficulty;
+    this.nonce = nonce;
+    this.prevHash = prevHash;
+    this.hash = hash;
   }
 
   /**
@@ -45,7 +45,7 @@ class Block {
   isEqual(otherBlock: Block): boolean {
     return (
       this.isValid() && otherBlock.isValid() && this.hash === otherBlock.hash
-    )
+    );
   }
 
   /**
@@ -58,9 +58,9 @@ class Block {
       this.prevHash,
       this.difficulty,
       this.nonce
-    )
+    );
 
-    return this.hash === validHash
+    return this.hash === validHash;
   }
 
   /**
@@ -74,7 +74,7 @@ class Block {
       GENESIS_DATA.prevHash,
       GENESIS_DATA.difficulty,
       GENESIS_DATA.nonce
-    )
+    );
 
     // create and store a valid block
     return new Block(
@@ -84,7 +84,7 @@ class Block {
       GENESIS_DATA.nonce,
       GENESIS_DATA.prevHash,
       GENESIS_DATA.hash
-    )
+    );
   }
 
   /**
@@ -93,11 +93,11 @@ class Block {
    * @param newTimestamp
    */
   static nextDifficulty(prevBlock: Block, newTimestamp: number) {
-    let { difficulty, timestamp } = prevBlock
-    if (newTimestamp - timestamp >= MINE_RATE) difficulty -= 1
-    if (newTimestamp - timestamp < MINE_RATE) difficulty += 1
+    let { difficulty, timestamp } = prevBlock;
+    if (newTimestamp - timestamp >= MINE_RATE) difficulty -= 1;
+    if (newTimestamp - timestamp < MINE_RATE) difficulty += 1;
 
-    return Math.max(1, difficulty)
+    return Math.max(1, difficulty);
   }
 
   /**
@@ -114,9 +114,9 @@ class Block {
     nonce: number,
     prevHash: string
   ): Block {
-    const timestamp = Date.now()
-    const hash = hashData(data, timestamp, prevHash, difficulty, nonce)
-    return new Block(data, timestamp, difficulty, nonce, prevHash, hash)
+    const timestamp = Date.now();
+    const hash = hashData(data, timestamp, prevHash, difficulty, nonce);
+    return new Block(data, timestamp, difficulty, nonce, prevHash, hash);
   }
 
   /**
@@ -125,22 +125,22 @@ class Block {
    * @param data
    */
   static mineBlock(prevBlock: Block, data: any) {
-    const prevHash = prevBlock.hash
-    let timestamp = Date.now()
-    let difficulty = prevBlock.difficulty
+    const prevHash = prevBlock.hash;
+    let timestamp = Date.now();
+    let difficulty = prevBlock.difficulty;
 
-    let hash
-    let nonce = 0
+    let hash;
+    let nonce = 0;
     while (true) {
-      timestamp = Date.now()
-      difficulty = Block.nextDifficulty(prevBlock, timestamp)
-      nonce++
-      hash = hashData(data, timestamp, prevHash, difficulty, nonce)
+      timestamp = Date.now();
+      difficulty = Block.nextDifficulty(prevBlock, timestamp);
+      nonce++;
+      hash = hashData(data, timestamp, prevHash, difficulty, nonce);
 
-      if (satisfiesDifficulty(hexToBinary(hash), difficulty)) break
+      if (satisfiesDifficulty(hexToBinary(hash), difficulty)) break;
     }
 
-    return new Block(data, timestamp, difficulty, nonce, prevHash, hash)
+    return new Block(data, timestamp, difficulty, nonce, prevHash, hash);
   }
 
   static fromObject(obj: BlockData) {
@@ -151,8 +151,8 @@ class Block {
       obj.nonce,
       obj.prevHash,
       obj.hash
-    )
+    );
   }
 }
 
-export default Block
+export default Block;

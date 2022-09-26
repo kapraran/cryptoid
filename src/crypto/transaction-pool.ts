@@ -1,16 +1,15 @@
-import Block from '../blockchain/block'
-import Transaction from './transaction'
-import Wallet from './wallet'
+import Block from '../blockchain/block';
+import Transaction from './transaction';
 
 class TransactionPool {
-  public transactionMap: Map<string, Transaction>
+  public transactionMap: Map<string, Transaction>;
 
   constructor() {
-    this.transactionMap = new Map()
+    this.transactionMap = new Map();
   }
 
   setTransaction(transaction: Transaction) {
-    this.transactionMap.set(transaction.id, transaction)
+    this.transactionMap.set(transaction.id, transaction);
   }
 
   /**
@@ -22,7 +21,7 @@ class TransactionPool {
   getExistingTransaction(address: string) {
     return Array.from(this.transactionMap.values()).find(
       (transaction) => transaction.input.address === address
-    )
+    );
   }
 
   /**
@@ -31,14 +30,14 @@ class TransactionPool {
   getValidTransactions() {
     return Array.from(this.transactionMap.values()).filter((transaction) =>
       Transaction.isValidTransaction(transaction)
-    )
+    );
   }
 
   /**
    * removes all transactions from the pool
    */
   clear() {
-    this.transactionMap.clear()
+    this.transactionMap.clear();
   }
 
   /**
@@ -49,10 +48,10 @@ class TransactionPool {
     for (let block of chain) {
       for (let transaction of block.data) {
         if (this.transactionMap.has(transaction.id))
-          this.transactionMap.delete(transaction.id)
+          this.transactionMap.delete(transaction.id);
       }
     }
   }
 }
 
-export default TransactionPool
+export default TransactionPool;

@@ -17,16 +17,16 @@ export default {
     return {
       address: null,
       amount: null,
-    }
+    };
   },
 
   methods: {
     sendMoney() {
-      if (!this.address || this.address.trim().length < 6) return
-      if (!this.amount || (this.amount | 0) <= 0) return
+      if (!this.address || this.address.trim().length < 6) return;
+      if (!this.amount || (this.amount | 0) <= 0) return;
 
-      const recipient = this.address.trim()
-      const amount = this.amount | 0
+      const recipient = this.address.trim();
+      const amount = this.amount | 0;
 
       fetch(`/api/transact`, {
         method: 'POST',
@@ -37,11 +37,11 @@ export default {
       })
         .then((response) => response.json())
         .then((body) => {
-          this.$router.push('/transaction-pool')
-        })
+          this.$router.push('/transaction-pool');
+        });
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
