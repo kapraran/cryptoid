@@ -14,7 +14,7 @@ import { generateTransactionBlocks, generateWallets } from './seeder';
 import TransactionMiner from './transaction-miner';
 
 export const app = express();
-const rootNode = `http://127.0.0.1:${PORT}`;
+const rootNode = `http://web:${PORT}`;
 
 const blockchain = new Blockchain();
 const transactionPool = new TransactionPool();
