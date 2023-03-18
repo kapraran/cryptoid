@@ -57,9 +57,9 @@
     "prettier"
   ],
   "dependencies": {
-    "body-parser": "1.19.0",
+    "body-parser": "1.19.1",
     "elliptic": "6.5.4",
-    "express": "4.17.1",
+    "express": "4.17.2",
     "got": "11.8.2",
     "hex-to-binary": "1.0.1",
     "redis": "3.1.1",
