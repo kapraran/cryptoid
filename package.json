@@ -36,7 +36,7 @@
     "ts-jest": "26.4.4",
     "typescript": "4.2.3",
     "vue-router": "3.4.9",
-    "vue-template-compiler": "2.6.12"
+    "vue-template-compiler": "2.7.15"
   },
   "scripts": {
     "start": "node lib/server/server.js",
@@ -64,7 +64,7 @@
     "hex-to-binary": "1.0.1",
     "redis": "3.1.1",
     "uuid": "8.3.2",
-    "vue": "2.6.12",
+    "vue": "2.7.15",
     "vue-hot-reload-api": "2.3.4"
   }
 }
