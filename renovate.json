@@ -1,5 +1,15 @@
 {
-  "extends": [
-    "config:base"
-  ]
+  "extends": ["config:base"],
+  "packageRules": [
+    {
+      "enabled": false,
+      "groupName": "everything",
+      "matchManagers": ["npm"],
+      "matchPackagePatterns": ["*"],
+      "separateMajorMinor": false
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true
+  }
 }
