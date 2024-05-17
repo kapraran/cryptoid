@@ -1,14 +1,14 @@
-# cryptoid
+# Cryptoid
 
 A complete blockchain-powered cryptocurrency system, created for educational purposes.
 
-Features:
-  * a complete implementation of the core ideas behind blockchain and cryptocurrencies
-  * a node.js backend with express.js
-  * a simple frontend that is powered by Vue
-  * a pubsub implementation, using redis
-  * test-driven development approach, using jest
-  * ... and all of these are written in Typescript
+## Features
+* Complete implementation of core blockchain and cryptocurrency concepts
+* Node.js backend with Express.js
+* Simple frontend powered by Vue
+* Pub/Sub implementation using Redis
+* Test-Driven Development (TDD) approach with Jest
+* Written entirely in TypeScript
 
 ## Screenshots
 
@@ -22,17 +22,16 @@ Features:
 <img src="./.github/readme/block-details.webp" width="30%"></a>
 
 
-## Usage <a name = "usage"></a>
+## Usage
 
-1. Start the main server
+1. Start the main server:
+    ```bash
+    npm run server
+    ```
 
-```
-npm run server
-```
+2. Start a server for each peer:
+    ```bash
+    npm run server:peer
+    ```
 
-2. Start a server for each peer with 
-```
-npm run server:peer
-```
-
-3. Navigate to the respective frontends in order to create transactions and mine new blocks
+3. Navigate to the respective frontends to create transactions and mine new blocks.
